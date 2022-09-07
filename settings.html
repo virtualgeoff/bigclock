@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Big Clock</title>
+	<title>Big Clock: Settings</title>
 	<meta name="description" content="A clock, but big. The current time, in the current time zone, in ISO 8601 format.">
 	<meta name="keywords" content="clock, big, current time, now, ISO 8601">
 	<meta name="author" content="Geoff Pack">
@@ -17,47 +17,34 @@
 		nav, main, div {box-sizing:border-box;}
 
 		h1 {}
-		p {}
+		p {margin-bottom:1.5em; line-height:1.4;}
 		small {font-size:0.75em;}
 
 		a {text-decoration:none;}
 		a:hover {text-decoration:underline;}
 
-		main  {width:100vw; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly;}
-		main h1, main p {margin:0; padding:0; text-align:center; line-height:1.0;}
-		main h1 {line-height:0.7;}
-
-		#date {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#time {margin:0 0;   font-size:19vw; font-weight:normal;}
-		#zone {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#utc  {margin:1em 0; font-size:5vw;  font-weight:200; display:none;}
+		main  {max-width:35em; margin:1em auto; padding:1em;}
+		label {white-space:nowrap;}
 
 		/* nav */
 		nav {position:absolute; left:0; top:0; width:100%; margin:0;}
 		nav a {display:inline-block; margin:0.6em -0.3em 0.6em 0.6em;}
-		nav a:hover {text-decoration:none;}
 		nav .right {float:right; margin-right:0.6em;}
 		nav svg {width:1.625em; height:1.625em;}
 
 		/* colors */
 		body, body.light {color:#000; background:#fff;}
 		body.dark {color:#fff; background:#000;}
-		body.light nav a:hover {text-decoration:none; color:#f00;}
-		body.dark nav a:hover {text-decoration:none; color:#c00;}
 
 		nav a, body.light nav a {color:#666;}
 		nav a:hover, body.light nav a:hover {color:#f00;}
 		body.dark nav a {color:#999;}
 		body.dark nav a:hover {color:#c00;}
 
-		#date, #zone, #utc, body.light #date, body.light #zone, body.light #utc {color:#bbb;}
-		body.dark #date, body.dark #zone, body.dark #utc {color:#666;}
-
 		@media (prefers-color-scheme: dark) {
 			body {color:#fff; background:#000;}
 			nav a {color:#999;}
 			nav a:hover {color:#c00;}
-			#date, #zone, #utc {color:#666;}
 		}
 
 	</style>
@@ -66,77 +53,33 @@
 		/* jshint esversion: 5 */
 
 		var $ = document.querySelector.bind(document);
-		var now, then, delay;
 
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
+			var radio = null, option = null;
 
-			if (colorScheme !== null) {
+			if (colorScheme) {
 				$('body').classList.remove('auto', 'light', 'dark');
 				$('body').classList.add(colorScheme);
+				radio = $('input[value='+colorScheme+']');
+				if (radio) {radio.checked = true; } // set radio button
 			}
-			if (fontFamily !== null) {
+			if (fontFamily) {
 				$('body').style.fontFamily = fontFamily;
+				option = $('option[value="'+fontFamily+'"]');
+				if (option) { option.selected = 'selected'; } // set select option
 			}
 		}
 
-		function fullscreen(e) {
-			// toggle fullscreen mode
-			e.preventDefault();
-
-			var doc = document.documentElement;
-
-			if (document.fullscreenElement || document.webkitFullscreenElement) {
-				if (document.exitFullscreen) {
-					document.exitFullscreen();
-				} else if (document.webkitCancelFullScreen) {
-					document.webkitCancelFullScreen();
-					//$('#timelineDiv').style.height = "calc(100vh - 4em)"; // fix Safari bug when exiting full screen
-				}
-			} else {
-				if (doc.requestFullscreen) {
-					doc.requestFullscreen();
-				} else if (doc.webkitRequestFullScreen) {
-					doc.webkitRequestFullScreen();
-				}
-			}
-		}
-
-		function update() {
-			// I want the time formatted in ISO-8601 but using the local time zone, but
-			// there does not appear to be a quick way to do this using built-in Date methods
-			// e.g. the toISOString() method always uses Zulu time
-			// but we can fake it by subtracting the TimezoneOffset, then getting substrings
-
-			now  = new Date();
-			then = new Date(now - (now.getTimezoneOffset()*60*1000));
-
-			$("#date").innerText = then.toISOString().substring(0, 10);
-			$("#time").innerText = then.toISOString().substring(11, 19);
-			$("#zone").innerHTML = now.toTimeString().substring(12, 15) + ':'  +
-				now.toTimeString().substring(15, 17) + '<br>' +
-				'<small>' + now.toTimeString().substring(18) + '</small>';
-			$("#utc").innerText = now.toISOString();
-
-			if (window.getComputedStyle($("#utc")).getPropertyValue('display') === 'none') {
-				now = new Date();
-				delay = 1000 - now.getMilliseconds();
-				setTimeout(update, delay);
-			} else {
-				window.requestAnimationFrame(update);
-			}
-		}
-
-
-		function init() {
+		function setOption(input) {
+			// handle radio buttons and select dropdown, and save to localStorage
+			localStorage.setItem(input.name, input.value);
 			getOptions();
-			update();
-			$('#fullscreen').addEventListener('click', fullscreen);
 		}
 
-		window.addEventListener('DOMContentLoaded', init);
+		window.addEventListener('DOMContentLoaded', getOptions);
 
 	</script>
 </head>
@@ -154,12 +97,6 @@
 				<text fill="currentColor" font-size="25px" font-family="Courier New" font-weight="bold" text-anchor="middle" x="21" y="27.5">i</text>
 			</svg>
 		</a>
-		<a href="#fullscreen" id="fullscreen" title="Make full screen">
-			<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 40 40" version="1.1">
-				<rect x="6" y="14" width="20" height="20" stroke="currentColor" fill="none" stroke-width="3" />
-				<rect x="12" y="6" width="22" height="22" stroke="currentColor" fill="none" stroke-width="3" />
-			</svg>
-		</a>
 		<a href="settings.html" title="Settings" class="right">
 			<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 40 40" version="1.1">
 				<path fill="currentColor" d="M15.667 36.958 14.875 31.583Q14.25 31.333 13.562 30.938Q12.875 30.542 12.333 30.125L7.292 32.333L2.958 24.708L7.417 21.375Q7.375 21.083 7.354 20.708Q7.333 20.333 7.333 20Q7.333 19.667 7.354 19.292Q7.375 18.917 7.417 18.625L2.958 15.292L7.292 7.667L12.333 9.875Q12.875 9.458 13.562 9.063Q14.25 8.667 14.875 8.458L15.667 3.042H24.333L25.125 8.417Q25.75 8.667 26.458 9.063Q27.167 9.458 27.667 9.875L32.708 7.667L37.042 15.292L32.542 18.583Q32.625 18.917 32.646 19.292Q32.667 19.667 32.667 20Q32.667 20.333 32.646 20.708Q32.625 21.083 32.542 21.417L37.042 24.708L32.667 32.333L27.667 30.125Q27.125 30.542 26.458 30.958Q25.792 31.375 25.125 31.583L24.333 36.958ZM20 25.542Q22.292 25.542 23.917 23.917Q25.542 22.292 25.542 20Q25.542 17.708 23.917 16.083Q22.292 14.458 20 14.458Q17.708 14.458 16.083 16.083Q14.458 17.708 14.458 20Q14.458 22.292 16.083 23.917Q17.708 25.542 20 25.542ZM20 22.792Q18.833 22.792 18.021 21.979Q17.208 21.167 17.208 20Q17.208 18.833 18.021 18.021Q18.833 17.208 20 17.208Q21.167 17.208 21.979 18.021Q22.792 18.833 22.792 20Q22.792 21.167 21.979 21.979Q21.167 22.792 20 22.792ZM20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20Q20 20 20 20ZM18.292 33.792H21.667L22.25 29.208Q23.625 28.875 24.833 28.188Q26.042 27.5 27 26.5L31.333 28.333L32.875 25.542L29.083 22.75Q29.25 22.083 29.354 21.396Q29.458 20.708 29.458 20Q29.458 19.292 29.375 18.604Q29.292 17.917 29.083 17.25L32.875 14.458L31.333 11.667L27 13.5Q26.083 12.458 24.875 11.729Q23.667 11 22.25 10.792L21.708 6.208H18.333L17.75 10.75Q16.333 11.083 15.125 11.771Q13.917 12.458 12.958 13.5L8.667 11.667L7.125 14.458L10.875 17.208Q10.708 17.917 10.604 18.604Q10.5 19.292 10.5 20Q10.5 20.708 10.604 21.396Q10.708 22.083 10.875 22.75L7.125 25.542L8.667 28.333L12.958 26.5Q13.958 27.5 15.167 28.208Q16.375 28.917 17.75 29.25Z"/>
@@ -168,10 +105,62 @@
 	</nav>
 
 	<main>
-		<p id="date"></p>
-		<h1 id="time"></h1>
-		<p id="zone"></p>
-		<p id="utc"></p>
+		<div>
+			<h1>Settings</h1>
+
+			<form>
+				<p>Color scheme:
+					<label><input type="radio" name="colorScheme" value="auto"  onchange="setOption(this)" checked> auto (system)</label> &nbsp;
+					<label><input type="radio" name="colorScheme" value="light" onchange="setOption(this)"> light</label> &nbsp;
+					<label><input type="radio" name="colorScheme" value="dark"  onchange="setOption(this)"> dark</label>
+				</p>
+
+				<p>Font:
+					<!-- https://www.cssfontstack.com for font stats -->
+					<select id="fontSelector" name="fontFamily" onchange="setOption(this)">
+    					<optgroup label="Monospace">
+							<option value="'Andale Mono', monospace">Andale Mono</option>
+							<option value="Consolas, monospace">Consolas</option>
+							<option value="Courier, monospace" selected>Courier</option>
+							<option value="'Courier New', monospace">Courier New</option>
+							<option value="'Lucida Console', monospace">Lucida Console</option>
+							<option value="'Lucida Sans Typewriter', monospace">Lucida Sans Typewriter</option>
+							<option value="Monaco, monospace">Monaco</option>
+    					</optgroup>
+    					<optgroup label="Sans-serif">
+							<option value="Helvetica, Arial, sans-serif">Arial / Helvetica</option>
+							<option value="'Arial Black', sans-serif">Arial Black</option>
+							<option value="'Arial Rounded MT Bold', sans-serif">Arial Rounded Bold</option>
+							<option value="'Century Gothic', sans-serif">Century Gothic</option>
+							<option value="'Gill Sans', sans-serif">Gill Sans</option>
+							<option value="Tahoma, sans-serif">Tahoma</option>
+							<option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+							<option value="Verdana, sans-serif">Verdana</option>
+    					</optgroup>
+    					<optgroup label="Serif">
+							<option value="Baskerville, serif">Baskerville</option>
+							<option value="'Big Caslon', 'Book Antiqua', serif">Big Caslon / Book Antiqua</option>
+							<option value="Garamond, serif">Garamond</option>
+							<option value="Georgia, serif">Georgia</option>
+							<option value="'Lucida Bright', serif">Lucida Bright</option>
+							<option value="Palatino, serif">Palatino</option>
+							<option value="Times, serif">Times</option>
+							<option value="'Times New Roman', serif">Times New Roman</option>
+	    				</optgroup>
+    					<optgroup label="Cursive">
+ 							<option value="'Brush Script MT', cursive">Brush Script</option>
+							<option value="'Comic Sans MS', cursive">Comic Sans</option>
+   						</optgroup>
+    					<optgroup label="Fantasy">
+							<option value="Copperplate, fantasy">Copperplate</option>
+ 							<option value="Papyrus, fantasy">Papyrus</option>
+   						</optgroup>
+					</select>
+					<br>
+					<small>(not all fonts are available on all devices)</small>
+				</p>
+			</form>
+		</div>
 	</main>
 
 	<!-- simple analytics -->
