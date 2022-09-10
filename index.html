@@ -3,13 +3,14 @@
 <head>
 	<meta charset="utf-8">
 	<title>Big Clock</title>
-	<meta name="description" content="A clock, but big. The current time, in the current time zone, in ISO 8601 format.">
+	<meta name="description" content="A clock, but big. The current time, in the current time zone, in ISO 8601.">
 	<meta name="keywords" content="clock, big, current time, now, ISO 8601">
 	<meta name="author" content="Geoff Pack">
 	<meta name="created"  content="2022-08-23">
 	<meta name="modified" content="2022-09-07">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
+	<link rel="icon" href="data:,">
 	<style>
 
 		html, body {margin:0; padding:0;}
@@ -30,7 +31,7 @@
 		#date {margin:1em 0; font-size:5vw;  font-weight:200;}
 		#time {margin:0 0;   font-size:19vw; font-weight:normal;}
 		#zone {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#utc  {margin:1em 0; font-size:5vw;  font-weight:200; display:none;}
+		#date, #zone {opacity:0.28;}
 
 		/* nav */
 		nav {position:absolute; left:0; top:0; width:100%; margin:0;}
@@ -40,24 +41,18 @@
 		nav svg {width:1.625em; height:1.625em;}
 
 		/* colors */
-		body, body.light {color:#000; background:#fff;}
-		body.dark {color:#fff; background:#000;}
-		body.light nav a:hover {text-decoration:none; color:#f00;}
-		body.dark nav a:hover {text-decoration:none; color:#c00;}
+		body, body.light {color:#111; background:#fff;}
+		body.dark {color:#eee; background:#000;}
 
 		nav a, body.light nav a {color:#666;}
 		nav a:hover, body.light nav a:hover {color:#f00;}
 		body.dark nav a {color:#999;}
 		body.dark nav a:hover {color:#c00;}
 
-		#date, #zone, #utc, body.light #date, body.light #zone, body.light #utc {color:#bbb;}
-		body.dark #date, body.dark #zone, body.dark #utc {color:#666;}
-
 		@media (prefers-color-scheme: dark) {
-			body {color:#fff; background:#000;}
+			body {color:#eee; background:#000;}
 			nav a {color:#999;}
 			nav a:hover {color:#c00;}
-			#date, #zone, #utc {color:#666;}
 		}
 
 	</style>
