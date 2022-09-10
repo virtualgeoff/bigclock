@@ -61,12 +61,14 @@
 		/* jshint esversion: 5 */
 
 		var $ = document.querySelector.bind(document);
-		var now, then, delay;
+		var now, then;
+		var showMilliseconds = false;
 
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
+			showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
 
 			if (colorScheme !== null) {
 				$('body').classList.remove('auto', 'light', 'dark');
@@ -74,6 +76,9 @@
 			}
 			if (fontFamily !== null) {
 				$('body').style.fontFamily = fontFamily;
+			}
+			if (showMilliseconds) {
+				$("#time").style.fontSize = '15vw';
 			}
 		}
 
@@ -88,7 +93,6 @@
 					document.exitFullscreen();
 				} else if (document.webkitCancelFullScreen) {
 					document.webkitCancelFullScreen();
-					//$('#timelineDiv').style.height = "calc(100vh - 4em)"; // fix Safari bug when exiting full screen
 				}
 			} else {
 				if (doc.requestFullscreen) {
@@ -100,8 +104,8 @@
 		}
 
 		function update() {
-			// I want the time formatted in ISO-8601 but using the local time zone, but
-			// there does not appear to be a quick way to do this using built-in Date methods
+			// local time in ISO-8601
+			// There does not appear to be a quick way to do this using built-in Date methods
 			// e.g. the toISOString() method always uses Zulu time
 			// but we can fake it by subtracting the TimezoneOffset, then getting substrings
 
@@ -110,25 +114,21 @@
 
 			$("#date").innerText = then.toISOString().substring(0, 10);
 			$("#time").innerText = then.toISOString().substring(11, 19);
-			$("#zone").innerHTML = now.toTimeString().substring(12, 15) + ':'  +
-				now.toTimeString().substring(15, 17) + '<br>' +
-				'<small>' + now.toTimeString().substring(18) + '</small>';
-			$("#utc").innerText = now.toISOString();
+			if (showMilliseconds) { $("#time").innerHTML += '<small>' + then.toISOString().substring(19, 23) + '</small>'; }
+			$("#zone").innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
+				'<br><small>' + now.toTimeString().substring(18) + '</small>';
 
-			if (window.getComputedStyle($("#utc")).getPropertyValue('display') === 'none') {
-				now = new Date();
-				delay = 1000 - now.getMilliseconds();
-				setTimeout(update, delay);
-			} else {
+			if (showMilliseconds) {
 				window.requestAnimationFrame(update);
+			} else {
+				setTimeout(update, (1000 - now.getMilliseconds()));
 			}
 		}
 
-
 		function init() {
 			getOptions();
-			update();
 			$('#fullscreen').addEventListener('click', fullscreen);
+			update();
 		}
 
 		window.addEventListener('DOMContentLoaded', init);
@@ -166,7 +166,6 @@
 		<p id="date"></p>
 		<h1 id="time"></h1>
 		<p id="zone"></p>
-		<p id="utc"></p>
 	</main>
 
 	<!-- simple analytics -->

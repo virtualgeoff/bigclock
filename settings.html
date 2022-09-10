@@ -60,7 +60,8 @@
 			// load options from localStorage on page load, and set colors, font, ...
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			var radio = null, option = null;
+			var showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
+			var radio = null, option = null, checkbox = null;
 
 			if (colorScheme) {
 				$('body').classList.remove('auto', 'light', 'dark');
@@ -73,11 +74,18 @@
 				option = $('option[value="'+fontFamily+'"]');
 				if (option) { option.selected = 'selected'; } // set select option
 			}
+			if (showMilliseconds) {
+				checkbox = $('input[name="showMilliseconds"]');
+				if (checkbox) { checkbox.checked = (showMilliseconds) ? true : false; } // set checkbox
+			}
 		}
 
 		function setOption(input) {
-			// handle radio buttons and select dropdown, and save to localStorage
-			localStorage.setItem(input.name, input.value);
+			// handle form inputs and save to localStorage
+			var name = input.name;
+			var value = input.value;
+			if (name === 'showMilliseconds') { value = input.checked; }
+			localStorage.setItem(name, value);
 			getOptions();
 		}
 
@@ -160,6 +168,10 @@
 					</select>
 					<br>
 					<small>(not all fonts are available on all devices)</small>
+				</p>
+
+				<p>
+					<label><input type="checkbox" name="showMilliseconds" onchange="setOption(this)"> show milliseconds</label>
 				</p>
 			</form>
 		</div>
