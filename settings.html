@@ -7,7 +7,7 @@
 	<meta name="keywords" content="clock, big, current time, now, ISO 8601">
 	<meta name="author" content="Geoff Pack">
 	<meta name="created"  content="2022-08-23">
-	<meta name="modified" content="2022-09-07">
+	<meta name="modified" content="2022-09-11">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
 	<link rel="icon" href="data:,">
@@ -20,12 +20,13 @@
 		h1 {}
 		p {margin-bottom:1.5em; line-height:1.4;}
 		small {font-size:0.75em;}
+		label {white-space:nowrap;}
 
 		a {text-decoration:none;}
 		a:hover {text-decoration:underline;}
 
+		/* layout */
 		main  {max-width:35em; margin:1em auto; padding:1em;}
-		label {white-space:nowrap;}
 
 		/* nav */
 		nav {position:absolute; left:0; top:0; width:100%; margin:0;}
@@ -170,7 +171,7 @@
 					<small>(not all fonts are available on all devices)</small>
 				</p>
 
-				<p>
+				<p>Time:
 					<label><input type="checkbox" name="showMilliseconds" onchange="setOption(this)"> show milliseconds</label>
 				</p>
 			</form>

@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Big Clock</title>
-	<meta name="description" content="A clock, but big. The current time, in the current time zone, in ISO 8601.">
-	<meta name="keywords" content="clock, big, current time, now, ISO 8601">
-	<meta name="author" content="Geoff Pack">
-	<meta name="created"  content="2022-08-23">
+	<title>Big Clock: Stopwatch</title>
+	<meta name="description" content="A stopwatch, but big.">
+	<meta name="keywords" content="clock, stopwatch, big">
+	<meta name="author"   content="Geoff Pack">
+	<meta name="created"  content="2022-09-10">
 	<meta name="modified" content="2022-09-11">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
@@ -19,7 +19,14 @@
 
 		h1 {}
 		p {}
-		small {font-size:0.75em;}
+		small {font-size:0.667em;}
+		.hide {display:none;}
+		button {width:5em; padding:0.5em; font-size:3vw; cursor:pointer;}
+		/* for button styling, see: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button */
+
+		table {border:1px solid rgba(128,128,128,0.2); border-collapse:collapse;}
+		th {padding:0.1em 1em; text-align:center; border:1px solid rgba(128,128,128,0.2);}
+		td {padding:0.1em 1em; text-align:right;  border:1px solid rgba(128,128,128,0.2);}
 
 		a {text-decoration:none;}
 		a:hover {text-decoration:underline;}
@@ -30,9 +37,10 @@
 		main h1 {line-height:0.7;}
 
 		#date {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#time {margin:0 0;   font-size:19vw; font-weight:normal;}
-		#zone {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#date, #zone {opacity:0.28;}
+		#time {margin:0 0;   font-size:16.5vw; font-weight:normal;}
+		#buttons {margin:1em 0; font-size:5vw;  font-weight:200;}
+		#date {opacity:0.28;}
+		#lapTimes {width:27em; margin:1em auto;}
 
 		/* nav */
 		nav {position:absolute; left:0; top:0; width:100%; margin:0;}
@@ -62,7 +70,7 @@
 		/* jshint esversion: 5 */
 
 		var $ = document.querySelector.bind(document);
-		var now, then;
+		var $All = document.querySelectorAll.bind(document);
 		var showMilliseconds = false;
 
 		function getOptions() {
@@ -70,6 +78,7 @@
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
 			showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
+			var stopwatchData  = localStorage.getItem('stopwatchData');
 
 			if (colorScheme !== null) {
 				$('body').classList.remove('auto', 'light', 'dark');
@@ -79,14 +88,16 @@
 				$('body').style.fontFamily = fontFamily;
 			}
 			if (showMilliseconds) {
-				$("#time").style.fontSize = '15vw';
+				$("#time").style.fontSize = '14.5vw';
+			}
+			if (stopwatchData) {
+				Stopwatch.setData( JSON.parse(stopwatchData) );
 			}
 		}
 
 		function fullscreen(e) {
 			// toggle fullscreen mode
 			e.preventDefault();
-
 			var doc = document.documentElement;
 
 			if (document.fullscreenElement || document.webkitFullscreenElement) {
@@ -104,32 +115,142 @@
 			}
 		}
 
-		function update() {
-			// local time in ISO-8601
-			// There does not appear to be a quick way to do this using built-in Date methods
-			// e.g. the toISOString() method always uses Zulu time
-			// but we can fake it by subtracting the TimezoneOffset, then getting substrings
+		var Stopwatch = (function() {
+			var isRunning = false,
+				startTime = null,
+				stopTime = null,
+				elapsedTime = null,
+				lapTimes = [0],
+				timerID = null;
 
-			now  = new Date();
-			then = new Date(now - (now.getTimezoneOffset()*60*1000));
+			var years, days, hours, minutes, seconds;
 
-			$("#date").innerText = then.toISOString().substring(0, 10);
-			$("#time").innerText = then.toISOString().substring(11, 19);
-			if (showMilliseconds) { $("#time").innerHTML += '<small>' + then.toISOString().substring(19, 23) + '</small>'; }
-			$("#zone").innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
-				'<br><small>' + now.toTimeString().substring(18) + '</small>';
+			function setData(obj) {
+				console.log(obj);
+				startTime = obj.startTime;
+				stopTime = obj.stopTime;
+				isRunning = obj.isRunning;
+				lapTimes = obj.lapTimes;
 
-			if (showMilliseconds) {
-				window.requestAnimationFrame(update);
-			} else {
-				setTimeout(update, (1000 - now.getMilliseconds()));
+				if (lapTimes.length > 1) {
+					$('#lapTimes').classList.remove('hide');
+					for (var i=1; i<lapTimes.length; i++) {
+						$('#lapTimes tbody').innerHTML += '<tr><td>' + i + '</td><td>' + lapTimes[i].toFixed(3) + '</td><td>' + (lapTimes[i] - lapTimes[i-1]).toFixed(3) + '</td></tr>';
+					}
+				}
+				if (isRunning) {
+					$('#start').innerText = 'Pause';
+					$All('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
+				}
+				update();
 			}
-		}
+
+			function saveData() {
+				var obj = {
+					'startTime': startTime,
+					'stopTime': stopTime,
+					'isRunning': isRunning,
+					'lapTimes': lapTimes
+				};
+				localStorage.setItem('stopwatchData', JSON.stringify(obj));
+			}
+
+			function deleteData() {
+				localStorage.removeItem('stopwatchData');
+			}
+
+			function start() {
+				if (isRunning) {
+					isRunning = false;
+					stopTime = Date.now();
+					$('#start').innerText = 'Start';
+
+					// cancel update
+					if (showMilliseconds) {
+						cancelAnimationFrame(timerID);
+					} else {
+						clearTimeout(timerID);
+					}
+				} else {
+					isRunning = true;
+					if (!startTime) { startTime = Date.now(); }
+					if (stopTime) {
+						startTime += Date.now() - stopTime; // add paused time
+						stopTime = null;
+					}
+					$('#start').innerText = 'Pause';
+				}
+				update();
+				$All('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
+				console.log(elapsedTime);
+				saveData();
+			}
+
+			function lap() {
+				// TODO: how to show current lap time also?
+				lapTimes.push(elapsedTime/1000); // in seconds
+				$('#lapTimes').classList.remove('hide');
+				$('#lapTimes tbody').innerHTML += '<tr><td>' + (lapTimes.length-1) + '</td><td>' + lapTimes[lapTimes.length-1].toFixed(3) + '</td><td>' + (lapTimes[lapTimes.length-1] - lapTimes[lapTimes.length-2]).toFixed(3) + '</td></tr>';
+				console.log(lapTimes);
+				saveData();
+			}
+
+			function reset() {
+				startTime = (isRunning) ? Date.now() : null;
+				stopTime = null;
+				elapsedTime = 0;
+				lapTimes = [0];
+				update();
+				$('#lapTimes tbody').innerHTML = '';
+				$('#lapTimes').classList.add('hide');
+				deleteData();
+			}
+
+			// left pad numbers with zeros
+			function pad2(n) {
+				return (n < 10) ? ('0' + n) : n;
+			}
+			function pad3(n) {
+				return (n < 100) ? ('0' + pad2(n)) : n;
+			}
+
+			function update() {
+				elapsedTime = ((isRunning ? Date.now() : stopTime) - startTime); // in milliseconds
+
+				seconds = Math.floor(elapsedTime/1000);
+				minutes = Math.floor(seconds/60);
+				hours   = Math.floor(minutes/60);
+				days    = Math.floor(hours/24);
+				years   = Math.floor(days/365);
+
+				$('#date').innerText = ((years > 0) ? (pad3(years) + 'y : ') : '') + ((days > 0) ? (pad3(days % 365) + 'd') : '');
+				$('#time').innerHTML = pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
+				if (showMilliseconds) {
+					$('#time').innerHTML += '<small>.' + pad3(elapsedTime % 1000) + '</small>';
+				} else {
+					$('#time').innerHTML += '<small>.' + Math.floor((elapsedTime/100)%10) + '</small>'; // tenths of seconds
+				}
+
+				if (isRunning) {
+					if (showMilliseconds) {
+						timerID = window.requestAnimationFrame(update);
+					} else {
+						timerID = setTimeout(update, 1000/60);
+					}
+				}
+			}
+
+			return {
+				setData: setData,
+				start: start,
+				lap: lap,
+				reset: reset
+			};
+		})();
 
 		function init() {
 			getOptions();
 			$('#fullscreen').addEventListener('click', fullscreen);
-			update();
 		}
 
 		window.addEventListener('DOMContentLoaded', init);
@@ -165,9 +286,28 @@
 
 	<main>
 		<p id="date"></p>
-		<h1 id="time"></h1>
-		<p id="zone"></p>
+		<h1 id="time">00:00:00<small>.0</small></h1>
+		<p id="buttons">
+			<button type="button" id="start" onclick="Stopwatch.start()">Start</button>
+			<button type="button" id="lap" class="hide" onclick="Stopwatch.lap()">Lap</button>
+			<button type="button" id="reset" onclick="Stopwatch.reset()">Reset</button>
+		</p>
 	</main>
+
+	<div id="lapTimes" class="hide">
+		<h2>Lap Times</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Lap:</th>
+					<th>Elapsed time:</th>
+					<th>Lap time:</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
 
 	<!-- simple analytics -->
 	<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
