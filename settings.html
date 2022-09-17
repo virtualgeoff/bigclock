@@ -18,7 +18,8 @@
 		nav, main, div {box-sizing:border-box;}
 
 		h1 {}
-		p {margin-bottom:1.5em; line-height:1.4;}
+		h2 {margin:2em 0 0.5em 0; font-size:1.2em;}
+		p {margin:1em 0 1em 3em; line-height:1.4;}
 		small {font-size:0.75em;}
 		label {white-space:nowrap;}
 
@@ -120,13 +121,15 @@
 			<h1>Settings</h1>
 
 			<form>
-				<p>Color scheme:
+				<h2>Color scheme</h2>
+				<p>
 					<label><input type="radio" name="colorScheme" value="auto"  onchange="setOption(this)" checked> auto (system)</label> &nbsp;
 					<label><input type="radio" name="colorScheme" value="light" onchange="setOption(this)"> light</label> &nbsp;
 					<label><input type="radio" name="colorScheme" value="dark"  onchange="setOption(this)"> dark</label>
 				</p>
 
-				<p>Font:
+				<h2>Font</h2>
+				<p>
 					<!-- https://www.cssfontstack.com for font stats -->
 					<select id="fontSelector" name="fontFamily" onchange="setOption(this)">
     					<optgroup label="Monospace">
@@ -167,13 +170,11 @@
  							<option value="Papyrus, fantasy">Papyrus</option>
    						</optgroup>
 					</select>
-					<br>
-					<small>(not all fonts are available on all devices)</small>
 				</p>
+				<p>(not all fonts are available on all devices)</p>
 
-				<p>Time:
-					<label><input type="checkbox" name="showMilliseconds" onchange="setOption(this)"> show milliseconds</label>
-				</p>
+				<h2>Time</h2>
+				<p><label><input type="checkbox" name="showMilliseconds" onchange="setOption(this)"> show milliseconds</label></p>
 			</form>
 		</div>
 	</main>
