@@ -71,6 +71,9 @@
 			if (fontFamily !== null) {
 				$('body').style.fontFamily = fontFamily;
 			}
+
+			// decode email
+			decodeURL( document.getElementById('email') );
 		}
 
 		function decodeURL(anchor) {
@@ -84,12 +87,7 @@
 			anchor.href = output;
 		}
 
-		function init() {
-			getOptions();
-			decodeURL( $('#email') );
-		}
-
-		window.addEventListener('DOMContentLoaded', init);
+		window.onload = getOptions;
 
 	</script>
 </head>
