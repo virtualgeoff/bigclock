@@ -5,7 +5,7 @@
 	<title>Big Clock: Settings</title>
 	<meta name="description" content="Big clock settings page.">
 	<meta name="keywords" content="clock, big, setting">
-	<meta name="author" content="Geoff Pack">
+	<meta name="author"   content="Geoff Pack">
 	<meta name="created"  content="2022-08-23">
 	<meta name="modified" content="2022-09-18">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,8 +56,6 @@
 
 		/* jshint esversion: 5 */
 
-		var $ = document.querySelector.bind(document);
-
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
 			var colorScheme = localStorage.getItem('colorScheme');
@@ -66,18 +64,18 @@
 			var radio = null, option = null, checkbox = null;
 
 			if (colorScheme) {
-				$('body').classList.remove('auto', 'light', 'dark');
-				$('body').classList.add(colorScheme);
-				radio = $('input[value='+colorScheme+']');
-				if (radio) {radio.checked = true; } // set radio button
+				document.body.classList.remove('auto', 'light', 'dark');
+				document.body.classList.add(colorScheme);
+				radio = document.querySelector('input[value='+colorScheme+']');
+				if (radio) { radio.checked = true; } // set radio button
 			}
 			if (fontFamily) {
-				$('body').style.fontFamily = fontFamily;
-				option = $('option[value="'+fontFamily+'"]');
+				document.body.style.fontFamily = fontFamily;
+				option = document.querySelector('option[value="'+fontFamily+'"]');
 				if (option) { option.selected = 'selected'; } // set select option
 			}
 			if (showMilliseconds) {
-				checkbox = $('input[name="showMilliseconds"]');
+				checkbox = document.querySelector('input[name="showMilliseconds"]');
 				if (checkbox) { checkbox.checked = (showMilliseconds) ? true : false; } // set checkbox
 			}
 		}

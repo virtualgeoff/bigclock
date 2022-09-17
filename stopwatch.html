@@ -69,8 +69,6 @@
 
 		/* jshint esversion: 5 */
 
-		var $ = document.querySelector.bind(document);
-		var $All = document.querySelectorAll.bind(document);
 		var showMilliseconds = false;
 
 		function getOptions() {
@@ -81,14 +79,13 @@
 			var stopwatchData  = localStorage.getItem('stopwatchData');
 
 			if (colorScheme !== null) {
-				$('body').classList.remove('auto', 'light', 'dark');
-				$('body').classList.add(colorScheme);
+				document.body.classList.add(colorScheme);
 			}
 			if (fontFamily !== null) {
-				$('body').style.fontFamily = fontFamily;
+				document.body.style.fontFamily = fontFamily;
 			}
 			if (showMilliseconds) {
-				$("#time").style.fontSize = '14.5vw';
+				document.getElementById('time').style.fontSize = '14.5vw';
 			}
 			if (stopwatchData) {
 				Stopwatch.setData( JSON.parse(stopwatchData) );
@@ -116,6 +113,7 @@
 		}
 
 		var Stopwatch = (function() {
+			// stopwatch data and methods
 			var isRunning = false,
 				startTime = null,
 				stopTime = null,
@@ -126,30 +124,32 @@
 			var years, days, hours, minutes, seconds;
 
 			function setData(obj) {
+				// set stopwatch data (on page load)
 				console.log(obj);
+				isRunning = obj.isRunning;
 				startTime = obj.startTime;
 				stopTime = obj.stopTime;
-				isRunning = obj.isRunning;
 				lapTimes = obj.lapTimes;
 
 				if (lapTimes.length > 1) {
-					$('#lapTimes').classList.remove('hide');
+					document.getElementById('lapTimes').classList.remove('hide');
 					for (var i=1; i<lapTimes.length; i++) {
-						$('#lapTimes tbody').innerHTML += '<tr><td>' + i + '</td><td>' + lapTimes[i].toFixed(3) + '</td><td>' + (lapTimes[i] - lapTimes[i-1]).toFixed(3) + '</td></tr>';
+						document.querySelector('#lapTimes tbody').innerHTML += '<tr><td>' + i + '</td><td>' + lapTimes[i].toFixed(3) + '</td><td>' + (lapTimes[i] - lapTimes[i-1]).toFixed(3) + '</td></tr>';
 					}
 				}
 				if (isRunning) {
-					$('#start').innerText = 'Pause';
-					$All('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
+					document.getElementById('start').innerText = 'Pause';
+					document.querySelectorAll('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
 				}
 				update();
 			}
 
 			function saveData() {
+				// save stopwatch data to localStorage
 				var obj = {
+					'isRunning': isRunning,
 					'startTime': startTime,
 					'stopTime': stopTime,
-					'isRunning': isRunning,
 					'lapTimes': lapTimes
 				};
 				localStorage.setItem('stopwatchData', JSON.stringify(obj));
@@ -160,12 +160,13 @@
 			}
 
 			function start() {
+				// start/stop stopwatch
 				if (isRunning) {
 					isRunning = false;
 					stopTime = Date.now();
-					$('#start').innerText = 'Start';
+					document.getElementById('start').innerText = 'Start';
 
-					// cancel update
+					// cancel next scheduled update
 					if (showMilliseconds) {
 						cancelAnimationFrame(timerID);
 					} else {
@@ -175,34 +176,38 @@
 					isRunning = true;
 					if (!startTime) { startTime = Date.now(); }
 					if (stopTime) {
-						startTime += Date.now() - stopTime; // add paused time
+						startTime += Date.now() - stopTime; // add stopped (paused) time
 						stopTime = null;
 					}
-					$('#start').innerText = 'Pause';
+					document.getElementById('start').innerText = 'Pause';
 				}
 				update();
-				$All('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
+				document.querySelectorAll('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
 				console.log(elapsedTime);
 				saveData();
 			}
 
 			function lap() {
-				// TODO: how to show current lap time also?
+				// record and show lap time
 				lapTimes.push(elapsedTime/1000); // in seconds
-				$('#lapTimes').classList.remove('hide');
-				$('#lapTimes tbody').innerHTML += '<tr><td>' + (lapTimes.length-1) + '</td><td>' + lapTimes[lapTimes.length-1].toFixed(3) + '</td><td>' + (lapTimes[lapTimes.length-1] - lapTimes[lapTimes.length-2]).toFixed(3) + '</td></tr>';
+				document.getElementById('lapTimes').classList.remove('hide');
+				document.querySelector('#lapTimes tbody').innerHTML += '<tr><td>' + (lapTimes.length-1) + '</td>' +
+					'<td>' + lapTimes[lapTimes.length-1].toFixed(3) + '</td>' +
+					'<td>' + (lapTimes[lapTimes.length-1] - lapTimes[lapTimes.length-2]).toFixed(3) + '</td></tr>';
 				console.log(lapTimes);
 				saveData();
 			}
 
 			function reset() {
-				startTime = (isRunning) ? Date.now() : null;
+				// reset stopwatch to zero
+				startTime = null;
 				stopTime = null;
 				elapsedTime = 0;
 				lapTimes = [0];
 				update();
-				$('#lapTimes tbody').innerHTML = '';
-				$('#lapTimes').classList.add('hide');
+				document.getElementById('date').innerHTML = 'Stopwatch';
+				document.querySelector('#lapTimes tbody').innerHTML = '';
+				document.getElementById('lapTimes').classList.add('hide');
 				deleteData();
 			}
 
@@ -223,12 +228,12 @@
 				days    = Math.floor(hours/24);
 				years   = Math.floor(days/365);
 
-				$('#date').innerText = ((years > 0) ? (pad3(years) + 'y : ') : '') + ((days > 0) ? (pad3(days % 365) + 'd') : '');
-				$('#time').innerHTML = pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
+				document.getElementById('date').innerText = 'Stopwatch' + ((years > 0) ? (' : ' + years + ' years') : '') + ((days > 0) ? (' : ' + (days % 365) + ' days') : '');
+				document.getElementById('time').innerHTML = pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
 				if (showMilliseconds) {
-					$('#time').innerHTML += '<small>.' + pad3(elapsedTime % 1000) + '</small>';
+					document.getElementById('time').innerHTML += '<small>.' + pad3(elapsedTime % 1000) + '</small>';
 				} else {
-					$('#time').innerHTML += '<small>.' + Math.floor((elapsedTime/100)%10) + '</small>'; // tenths of seconds
+					document.getElementById('time').innerHTML += '<small>.' + Math.floor((elapsedTime/100)%10) + '</small>'; // tenths of seconds
 				}
 
 				if (isRunning) {
@@ -280,7 +285,7 @@
 	</nav>
 
 	<main>
-		<p id="date"></p>
+		<p id="date">Stopwatch</p>
 		<h1 id="time">00:00:00<small>.0</small></h1>
 		<p id="buttons">
 			<button type="button" id="start" onclick="Stopwatch.start()">Start</button>

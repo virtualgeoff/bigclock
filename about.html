@@ -56,20 +56,16 @@
 
 		/* jshint esversion: 5 */
 
-		var $ = document.querySelector.bind(document);
-		var $All = document.querySelectorAll.bind(document);
-
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
 
 			if (colorScheme !== null) {
-				$('body').classList.remove('auto', 'light', 'dark');
-				$('body').classList.add(colorScheme);
+				document.body.classList.add(colorScheme);
 			}
 			if (fontFamily !== null) {
-				$('body').style.fontFamily = fontFamily;
+				document.body.style.fontFamily = fontFamily;
 			}
 
 			// decode email

@@ -61,7 +61,6 @@
 
 		/* jshint esversion: 5 */
 
-		var $ = document.querySelector.bind(document);
 		var now;
 		var showMilliseconds = false;
 
@@ -72,14 +71,13 @@
 			showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
 
 			if (colorScheme !== null) {
-				$('body').classList.remove('auto', 'light', 'dark');
-				$('body').classList.add(colorScheme);
+				document.body.classList.add(colorScheme);
 			}
 			if (fontFamily !== null) {
-				$('body').style.fontFamily = fontFamily;
+				document.body.style.fontFamily = fontFamily;
 			}
 			if (showMilliseconds) {
-				$("#time").style.fontSize = '15vw';
+				document.getElementById('time').style.fontSize = '15vw';
 			}
 
 			// update clock
@@ -109,10 +107,10 @@
 		function update() {
 			// UTC, formatted in ISO-8601
 			now = new Date();
-			$("#date").innerText = now.toISOString().substring(0, 10);
-			$("#time").innerText = now.toISOString().substring(11, 19);
-			if (showMilliseconds) { $("#time").innerHTML += '<small>' + now.toISOString().substring(19, 23) + '</small>'; }
-			$("#zone").innerText = 'UTC';
+			document.getElementById('date').innerText = now.toISOString().substring(0, 10);
+			document.getElementById('time').innerText = now.toISOString().substring(11, 19);
+			if (showMilliseconds) { document.getElementById('time').innerHTML += '<small>' + now.toISOString().substring(19, 23) + '</small>'; }
+			document.getElementById('zone').innerText = 'UTC';
 
 			if (showMilliseconds) {
 				window.requestAnimationFrame(update);
@@ -153,9 +151,9 @@
 	</nav>
 
 	<main>
-		<p id="date"></p>
-		<h1 id="time"></h1>
-		<p id="zone"></p>
+		<p id="date"><small>A clock, but BIG. The current<br>time, in UTC, in ISO 8601</small></p>
+		<h1 id="time">00:00:00</h1>
+		<p id="zone"><small>This page requires Javascript!</small></p>
 	</main>
 
 	<!-- simple analytics -->
