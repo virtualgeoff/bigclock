@@ -87,10 +87,10 @@
 			showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
 			var timerData  = localStorage.getItem('timerData');
 
-			if (colorScheme !== null) {
+			if (colorScheme) {
 				document.body.classList.add(colorScheme);
 			}
-			if (fontFamily !== null) {
+			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
 			}
 			if (showMilliseconds) {

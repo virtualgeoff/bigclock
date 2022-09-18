@@ -77,10 +77,10 @@
 			var fontFamily  = localStorage.getItem('fontFamily');
 			showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
 
-			if (colorScheme !== null) {
+			if (colorScheme) {
 				document.body.classList.add(colorScheme);
 			}
-			if (fontFamily !== null) {
+			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
 			}
 			if (showMilliseconds) {

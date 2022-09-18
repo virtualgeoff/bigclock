@@ -68,10 +68,10 @@
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
 
-			if (colorScheme !== null) {
+			if (colorScheme) {
 				document.body.classList.add(colorScheme);
 			}
-			if (fontFamily !== null) {
+			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
 			}
 
@@ -90,7 +90,7 @@
 			anchor.href = output;
 		}
 
-		window.onload = getOptions;
+		window.addEventListener('DOMContentLoaded', getOptions);
 
 	</script>
 </head>
