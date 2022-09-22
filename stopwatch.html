@@ -235,7 +235,9 @@
 				days    = Math.floor(hours/24);
 				years   = Math.floor(days/365);
 
-				document.getElementById('date').innerText = 'Stopwatch' + ((years > 0) ? (' : ' + years + ' years') : '') + ((days > 0) ? (' : ' + (days % 365) + ' days') : '');
+				document.getElementById('date').innerText = 'Stopwatch' +
+					((years > 1) ? (' : ' + years + ' years') : ((years > 0) ? ' : 1 year,' : '')) +
+					((days%365 > 1) ? (' : ' + days%365 + ' days,') : ((days%365 > 0) ? ' : 1 day,' : ''));
 				document.getElementById('time').innerHTML = pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
 				if (showMilliseconds) {
 					document.getElementById('time').innerHTML += '<small>.' + pad3(elapsedTime % 1000) + '</small>';
