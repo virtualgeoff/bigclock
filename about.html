@@ -84,6 +84,26 @@
 			decodeURL( document.getElementById('email') );
 		}
 
+		function fullscreen(e) {
+			// toggle fullscreen mode
+			//e.preventDefault();
+			var doc = document.documentElement;
+
+			if (document.fullscreenElement || document.webkitFullscreenElement) {
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				} else if (document.webkitCancelFullScreen) {
+					document.webkitCancelFullScreen();
+				}
+			} else {
+				if (doc.requestFullscreen) {
+					doc.requestFullscreen();
+				} else if (doc.webkitRequestFullScreen) {
+					doc.webkitRequestFullScreen();
+				}
+			}
+		}
+
 		function decodeURL(anchor) {
 			// decodes data in data-address attribute of an anchor tag — used to obfuscate mailto link
 			var input = anchor.dataset.address.replace(/\s+/g, ',').split(',');
@@ -111,6 +131,12 @@
 			<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 40 40" version="1.1">
 				<circle cx="20" cy="20" r="15" stroke="currentColor" fill="none" stroke-width="3.5" />
 				<text fill="currentColor" font-size="25px" font-family="Courier New" font-weight="bold" text-anchor="middle" x="21" y="27.5">i</text>
+			</svg>
+		</a>
+		<a href="#fullscreen" id="fullscreen" title="Make full screen" onclick="fullscreen(); return false;">
+			<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 40 40" version="1.1">
+				<rect x="6" y="14" width="20" height="20" stroke="currentColor" fill="none" stroke-width="3" />
+				<rect x="12" y="6" width="22" height="22" stroke="currentColor" fill="none" stroke-width="3" />
 			</svg>
 		</a>
 		<a href="settings.html" title="Settings" class="right">
