@@ -77,6 +77,8 @@
 		/* jshint esversion: 5 */
 
 		var showMilliseconds = false;
+		var dynamicColors = false;
+		var bgColor, h, s, l;
 
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
@@ -87,6 +89,12 @@
 
 			if (colorScheme) {
 				document.body.classList.add(colorScheme);
+				if (colorScheme === 'dynamic') {
+					dynamicColors = true;
+				} else if (colorScheme === 'custom') {
+					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
+					document.body.style.color = localStorage.getItem('colorText') || '#000000';
+				}
 			}
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
@@ -97,6 +105,17 @@
 			if (stopwatchData) {
 				Stopwatch.setData( JSON.parse(stopwatchData) );
 			}
+		}
+
+		function setDynamicColors(now) {
+			// set colors based on the current local time
+			h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
+			s = now.getMinutes() + 40; // 40-100%
+			l = now.getSeconds() + 20; // 20-80%;
+			bgColor = 'hsl(' + h + ' ' + s + '% '+ l + '%)';
+			//console.log(bgColor);
+			document.body.style.backgroundColor = bgColor;
+			document.body.style.color = (l>50) ? '#111' : '#ddd';
 		}
 
 		function fullscreen(e) {
@@ -244,6 +263,8 @@
 				} else {
 					document.getElementById('time').innerHTML += '<small>.' + Math.floor((elapsedTime/100)%10) + '</small>'; // tenths of seconds
 				}
+
+				if (dynamicColors) { setDynamicColors(new Date()); }
 
 				if (isRunning) {
 					if (showMilliseconds) {

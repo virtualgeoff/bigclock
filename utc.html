@@ -70,6 +70,8 @@
 
 		var now;
 		var showMilliseconds = false;
+		var dynamicColors = false;
+		var bgColor, h, s, l;
 
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
@@ -79,6 +81,12 @@
 
 			if (colorScheme) {
 				document.body.classList.add(colorScheme);
+				if (colorScheme === 'dynamic') {
+					dynamicColors = true;
+				} else if (colorScheme === 'custom') {
+					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
+					document.body.style.color = localStorage.getItem('colorText') || '#000000';
+				}
 			}
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
@@ -89,6 +97,17 @@
 
 			// update clock
 			update();
+		}
+
+		function setDynamicColors(now) {
+			// set colors based on the current UTC time
+			h = now.getUTCHours() * 15 + now.getUTCMinutes() * 15/60; // 0-360°
+			s = now.getUTCMinutes() + 40; // 40-100%
+			l = now.getUTCSeconds() + 20; // 20-80%;
+			bgColor = 'hsl(' + h + ' ' + s + '% '+ l + '%)';
+			console.log(bgColor);
+			document.body.style.backgroundColor = bgColor;
+			document.body.style.color = (l>50) ? '#111' : '#ddd';
 		}
 
 		function fullscreen(e) {
@@ -118,6 +137,8 @@
 			document.getElementById('time').innerText = now.toISOString().substring(11, 19);
 			if (showMilliseconds) { document.getElementById('time').innerHTML += '<small>' + now.toISOString().substring(19, 23) + '</small>'; }
 			document.getElementById('zone').innerText = 'UTC';
+
+			if (dynamicColors) { setDynamicColors(now); }
 
 			if (showMilliseconds) {
 				window.requestAnimationFrame(update);

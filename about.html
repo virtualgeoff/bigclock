@@ -21,15 +21,15 @@
 		h2 {margin:2em 0 0.5em 0; font-size:1.2em;}
 		p {margin-bottom:1.5em; line-height:1.4;}
 		small {font-size:0.75em;}
-		.center {text-align:center;}
 
 		a {text-decoration:none;}
 		a:hover {text-decoration:underline;}
 
-		.bmc {padding:0.7em 0.9em; font-size:1.2em; font-style:italic; text-decoration:none; color:#000; background:#fd0; border-radius:0.5em;}
-		.bmc:visited {color:#000;}
-		.bmc:hover {color:#f00;}
-		.bmc svg {height:1.3em; margin:0 0.4em 0.15em 0; vertical-align:middle;}
+		#bmc {margin:2em 0; text-align:center;}
+		#bmc svg {height:1.3em; margin:0 0.4em 0.15em 0; vertical-align:middle;}
+		#bmc a {padding:0.7em 0.9em; font-size:1.2em; font-style:italic; text-decoration:none; background:#fd0; border-radius:0.5em;}
+		#bmc a, #bmc a:visited {color:#000;}
+		#bmc a:hover {color:#f00;}
 
 		/* layout */
 		main  {max-width:40em; margin:1em auto; padding:1em;}
@@ -75,6 +75,12 @@
 
 			if (colorScheme) {
 				document.body.classList.add(colorScheme);
+				if (colorScheme === 'dynamic') {
+					setDynamicColors(new Date());
+				} else if (colorScheme === 'custom') {
+					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
+					document.body.style.color = localStorage.getItem('colorText') || '#000000';
+				}
 			}
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
@@ -82,6 +88,17 @@
 
 			// decode email
 			decodeURL( document.getElementById('email') );
+		}
+
+		function setDynamicColors(now) {
+			// set colors based on the current local time
+			var h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
+			var s = now.getMinutes() + 40; // 40-100%
+			var l = now.getSeconds() + 20; // 20-80%;
+			var bgColor = 'hsl(' + h + ' ' + s + '% '+ l + '%)';
+			//console.log(bgColor);
+			document.body.style.backgroundColor = bgColor;
+			document.body.style.color = (l>50) ? '#111' : '#ddd';
 		}
 
 		function fullscreen(e) {
@@ -147,7 +164,6 @@
 	</nav>
 
 	<main>
-		<div>
 			<h1>About</h1>
 			<p>Sometimes you just need a big clock.</p>
 
@@ -160,8 +176,8 @@
 
 			<h2>Support</h2>
 			<p>Big Clock is free to use, and contains no ads. If you would like to help support Big Clock, please —</p>
-			<p class="center" style="margin:2em 0;">
-				<a class="bmc" target="_blank" href="http://buymeacoffee.com/virtualgeoff">
+		<p id="bmc">
+			<a target="_blank" href="http://buymeacoffee.com/virtualgeoff">
 					<svg viewBox="0 0 884 1279" xmlns="http://www.w3.org/2000/svg">
 						<path fill="#000" d="m880 342-7-36c-7-31-21-62-54-73-10-4-22-5-30-13s-11-19-12-30l-11-61c-3-17-5-37-13-52-10-22-32-34-53-42-11-5-22-8-33-11C613 10 557 5 503 2c-66-4-132-2-198 3-48 5-100 10-146 27-17 6-35 14-47 27a51 51 0 0 0-10 61c8 14 22 24 37 31 19 8 39 15 60 19a1334 1334 0 0 0 417 7c19-3 31-27 25-44-6-21-24-28-44-25l-9 1h-2a1234 1234 0 0 1-313 1l-6-1h-1l-6-1a665 665 0 0 1-42-9 6 6 0 0 1 3-9 626 626 0 0 1 45-8l21-2a1336 1336 0 0 1 290 1l7 1h5l43 8c21 5 47 6 57 29 3 7 4 15 6 23l2 10a153589 153589 0 0 0 15 74 13 13 0 0 1-11 10l-3 1h-3a1670 1670 0 0 1-253 16 1976 1976 0 0 1-250-16l-7-1-15-3-52-8c-21-4-41-2-60 8-16 9-28 22-36 38-8 17-11 35-14 53-4 18-10 38-8 56 5 40 33 73 74 80a2072 2072 0 0 0 604 20 26 26 0 0 1 28 29l-3 37a15200479 15200479 0 0 1-55 528c-2 22-2 44-6 66-7 34-30 54-63 62-31 7-62 11-94 11l-105-1c-37 0-82-3-111-31-26-24-29-63-32-96l-14-131-25-242-17-157-1-8c-2-19-15-37-36-36-18 0-38 16-36 36l12 116 25 241 22 205 4 40c8 71 62 110 130 121 40 6 80 8 120 8 52 1 104 3 155-6 75-14 131-64 139-142a758975 758975 0 0 0 30-290l25-243 11-111a26 26 0 0 1 21-22c21-5 42-12 57-28 24-26 29-60 21-94ZM72 366v4-4Zm3 16 1 1-2-1h1Zm2 3c0 1 1 2 0 0Zm4 3Zm720-5c-8 7-20 11-31 12a2172 2172 0 0 1-667-2c-9-1-19-3-25-9-12-13-6-38-3-53 3-14 8-33 25-35 26-3 56 8 81 12a1787 1787 0 0 0 562-7c22-4 45-11 58 11 9 15 10 35 9 52-1 7-4 14-9 19Z"/>
 						<path fill="#fff" d="M473 591c-46 20-98 42-166 42-28 0-56-4-84-12l47 480a80 80 0 0 0 80 74l88 3 96-3a80 80 0 0 0 79-74l50-530c-22-8-44-13-70-13-44 0-79 15-120 33Z"/>
@@ -176,7 +192,6 @@
 				<a id="email" href="#" data-address="6d 61 69 6c 74 6f 3a 76 69 72 74 75 61 6c 67 65 6f 66 66 40 70 72 6f 74 6f 6e 6d 61 69 6c 2e 63 6f 6d 3f 73 75 62 6a 65 63 74 3d 42 69 67 43 6c 6f 63 6b">Feedback</a> &nbsp; 〜 &nbsp;
 				<a href="https://github.com/virtualgeoff/bigclock">Source</a>
 			</small></p>
-		</div>
 	</main>
 
 	<!-- simple analytics -->

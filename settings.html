@@ -65,17 +65,32 @@
 
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
+			// also for this page, need to set form inputs on load
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
 			var showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
 			var radio = null, option = null, checkbox = null;
 
 			if (colorScheme) {
-				document.body.classList.remove('auto', 'light', 'dark');
+				document.body.classList.remove('auto', 'light', 'dark', 'dynamic', 'custom');
 				document.body.classList.add(colorScheme);
 				radio = document.querySelector('input[value='+colorScheme+']');
 				if (radio) { radio.checked = true; } // set radio button
+
+				if (colorScheme === 'dynamic') {
+					setDynamicColors(new Date());
+				} else if (colorScheme === 'custom') {
+					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
+					document.body.style.color = localStorage.getItem('colorText') || '#000000';
+				} else {
+					document.body.style.backgroundColor = '';
+					document.body.style.color = '';
+				}
 			}
+			// set color inputs (even if colorScheme is not currently 'custom', or even set)
+			document.querySelector('input[name="colorBG"]').value   = localStorage.getItem('colorBG') || '#ff7700';
+			document.querySelector('input[name="colorText"]').value = localStorage.getItem('colorText') || '#000000';
+
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
 				option = document.querySelector('option[value="'+fontFamily+'"]');
@@ -91,9 +106,23 @@
 			// handle form inputs and save to localStorage
 			var name = input.name;
 			var value = input.value;
+			//console.log(name, value);
 			if (name === 'showMilliseconds') { value = input.checked; }
+			// set colorScheme to custom on color input:
+			if ((name === 'colorBG') || (name === 'colorText')) { document.getElementById('colorSchemeCustom').click(); }
 			localStorage.setItem(name, value);
 			getOptions();
+		}
+
+		function setDynamicColors(now) {
+			// set colors based on the current local time
+			var h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
+			var s = now.getMinutes() + 40; // 40-100%
+			var l = now.getSeconds() + 20; // 20-80%;
+			var bgColor = 'hsl(' + h + ' ' + s + '% '+ l + '%)';
+			//console.log(bgColor);
+			document.body.style.backgroundColor = bgColor;
+			document.body.style.color = (l>50) ? '#111' : '#ddd';
 		}
 
 		function fullscreen(e) {
@@ -148,15 +177,19 @@
 	</nav>
 
 	<main>
-		<div>
 			<h1>Settings</h1>
 
 			<form>
 				<h2>Color scheme</h2>
 				<p>
-					<label><input type="radio" name="colorScheme" value="auto"  onchange="setOption(this)" checked> auto (system)</label> &nbsp;
-					<label><input type="radio" name="colorScheme" value="light" onchange="setOption(this)"> light</label> &nbsp;
-					<label><input type="radio" name="colorScheme" value="dark"  onchange="setOption(this)"> dark</label>
+				<label><input type="radio" name="colorScheme" value="auto"  onchange="setOption(this)" checked> auto (system)</label><br>
+				<label><input type="radio" name="colorScheme" value="light" onchange="setOption(this)"> light</label><br>
+				<label><input type="radio" name="colorScheme" value="dark"  onchange="setOption(this)"> dark</label><br>
+				<label><input type="radio" name="colorScheme" value="dynamic" onchange="setOption(this)"> dynamic (color changes with time)</label><br>
+				<label><input type="radio" id="colorSchemeCustom" name="colorScheme" value="custom"  onchange="setOption(this)"> custom: </label> &nbsp;
+
+				<input type="color" name="colorText" value="#000000" onchange="setOption(this)"><label for="colorText"> text</label> &nbsp;
+				<input type="color" name="colorBG"   value="#ff7700" onchange="setOption(this)"><label for="colorBG"> background</label>
 				</p>
 
 				<h2>Font</h2>
@@ -207,7 +240,6 @@
 				<h2>Time</h2>
 				<p><label><input type="checkbox" name="showMilliseconds" onchange="setOption(this)"> show milliseconds</label></p>
 			</form>
-		</div>
 	</main>
 
 	<!-- simple analytics -->
