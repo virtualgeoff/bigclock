@@ -267,7 +267,7 @@
 				if (dynamicColors) { setDynamicColors(new Date()); }
 
 				if (isRunning) {
-					if (showMilliseconds) {
+					if (showMilliseconds && window.requestAnimationFrame) {
 						timerID = window.requestAnimationFrame(update);
 					} else {
 						timerID = setTimeout(update, 1000/60);
