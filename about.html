@@ -7,7 +7,7 @@
 	<meta name="keywords" content="clock, big, about.">
 	<meta name="author" content="Geoff Pack">
 	<meta name="created"  content="2022-08-23">
-	<meta name="modified" content="2022-09-18">
+	<meta name="modified" content="2022-09-30">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
 	<link rel="icon" href="data:,">
@@ -30,6 +30,8 @@
 		#bmc a {padding:0.7em 0.9em; font-size:1.2em; font-style:italic; text-decoration:none; background:#fd0; border-radius:0.5em;}
 		#bmc a, #bmc a:visited {color:#000;}
 		#bmc a:hover {color:#f00;}
+
+		#more {margin-top:3em; font-size:0.8em; text-align:center;}
 
 		/* layout */
 		main  {max-width:40em; margin:1em auto; padding:1em;}
@@ -165,11 +167,12 @@
 
 	<main>
 			<h1>About</h1>
-			<p>Sometimes you just need a big clock.</p>
+		<p>A clock, but BIG. The current time, in your current time zone, in <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a>.</p>
+		<p>The clock is big, but the pages are ultra-minimal: one request and less than 16 kB each. They are coded in plain vanilla JS (ES 5) and CSS (2.1), and designed specifically to work on older devices.</p>
 
 			<ul>
-				<li><a href="./">Clock: Local Time</a></li>
-				<li><a href="utc.html">Clock: UTC</a></li>
+			<li><a href="./">Local Time</a></li>
+			<li><a href="utc.html">UTC Clock</a></li>
 				<li><a href="stopwatch.html">Stopwatch</a></li>
 				<li><a href="timer.html">Timer</a></li>
 			</ul>
@@ -188,10 +191,10 @@
 			<h2>Privacy</h2>
 			<p>We collect aggregate user stats only. Your settings are stored in your web browser and are not sent to the server. No cookies are saved or sent.</p>
 
-			<p class="center"><small>
+		<p id="more">
 				<a id="email" href="#" data-address="6d 61 69 6c 74 6f 3a 76 69 72 74 75 61 6c 67 65 6f 66 66 40 70 72 6f 74 6f 6e 6d 61 69 6c 2e 63 6f 6d 3f 73 75 62 6a 65 63 74 3d 42 69 67 43 6c 6f 63 6b">Feedback</a> &nbsp; 〜 &nbsp;
 				<a href="https://github.com/virtualgeoff/bigclock">Source</a>
-			</small></p>
+		</p>
 	</main>
 
 	<!-- simple analytics -->
