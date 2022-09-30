@@ -121,19 +121,19 @@
 		function fullscreen(e) {
 			// toggle fullscreen mode
 			//e.preventDefault();
-			var doc = document.documentElement;
+			var d = document, dE = d.documentElement;
 
-			if (document.fullscreenElement || document.webkitFullscreenElement) {
-				if (document.exitFullscreen) {
-					document.exitFullscreen();
-				} else if (document.webkitCancelFullScreen) {
-					document.webkitCancelFullScreen();
+			if (d.fullscreenElement || d.webkitFullscreenElement) {
+				if (d.exitFullscreen) {
+					d.exitFullscreen();
+				} else if (d.webkitCancelFullScreen) {
+					d.webkitCancelFullScreen();
 				}
 			} else {
-				if (doc.requestFullscreen) {
-					doc.requestFullscreen();
-				} else if (doc.webkitRequestFullScreen) {
-					doc.webkitRequestFullScreen();
+				if (dE.requestFullscreen) {
+					dE.requestFullscreen();
+				} else if (dE.webkitRequestFullScreen) {
+					dE.webkitRequestFullScreen();
 				}
 			}
 		}
