@@ -7,7 +7,7 @@
 	<meta name="keywords" content="clock, big, setting">
 	<meta name="author"   content="Geoff Pack">
 	<meta name="created"  content="2022-08-23">
-	<meta name="modified" content="2022-09-18">
+	<meta name="modified" content="2022-09-30">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
 	<link rel="icon" href="data:,">
@@ -68,7 +68,7 @@
 			// also for this page, need to set form inputs on load
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			var showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
+			var showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
 			var radio = null, option = null, checkbox = null;
 
 			if (colorScheme) {
@@ -96,9 +96,9 @@
 				option = document.querySelector('option[value="'+fontFamily+'"]');
 				if (option) { option.selected = 'selected'; } // set select option
 			}
-			if (showMilliseconds) {
-				checkbox = document.querySelector('input[name="showMilliseconds"]');
-				if (checkbox) { checkbox.checked = (showMilliseconds) ? true : false; } // set checkbox
+			if (showHundredths) {
+				checkbox = document.querySelector('input[name="showHundredths"]');
+				if (checkbox) { checkbox.checked = (showHundredths) ? true : false; } // set checkbox
 			}
 		}
 
@@ -107,7 +107,7 @@
 			var name = input.name;
 			var value = input.value;
 			//console.log(name, value);
-			if (name === 'showMilliseconds') { value = input.checked; }
+			if (name === 'showHundredths') { value = input.checked; }
 			// set colorScheme to custom on color input:
 			if ((name === 'colorBG') || (name === 'colorText')) { document.getElementById('colorSchemeCustom').click(); }
 			localStorage.setItem(name, value);
@@ -238,7 +238,8 @@
 				<p>(not all fonts are available on all devices)</p>
 
 				<h2>Time</h2>
-				<p><label><input type="checkbox" name="showMilliseconds" onchange="setOption(this)"> show milliseconds</label></p>
+			<p><label><input type="checkbox" name="showHundredths" onchange="setOption(this)"> show hundredths of a second</label><br>
+			<small>Note: when selected, the clocks will typically animate at ~60 fps. This means the accuracy is no better than ~17 ms, or ±0.02 s.</small></p>
 			</form>
 	</main>
 

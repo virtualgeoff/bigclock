@@ -7,7 +7,7 @@
 	<meta name="keywords" content="clock, big, current time, now, ISO 8601">
 	<meta name="author" content="Geoff Pack">
 	<meta name="created"  content="2022-08-23">
-	<meta name="modified" content="2022-09-18">
+	<meta name="modified" content="2022-09-30">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
 	<link rel="icon" href="data:,">
@@ -69,7 +69,7 @@
 		/* jshint esversion: 5 */
 
 		var now, then;
-		var showMilliseconds = false;
+		var showHundredths = false;
 		var dynamicColors = false;
 		var bgColor, h, s, l;
 
@@ -77,7 +77,7 @@
 			// load options from localStorage on page load, and set colors, font, ...
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			showMilliseconds = JSON.parse(localStorage.getItem('showMilliseconds')); // convert from string!
+			showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
 
 			if (colorScheme) {
 				document.body.classList.add(colorScheme);
@@ -91,7 +91,7 @@
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
 			}
-			if (showMilliseconds) {
+			if (showHundredths) {
 				document.getElementById('time').style.fontSize = '15vw';
 			}
 
@@ -105,7 +105,7 @@
 			s = now.getMinutes() + 40; // 40-100%
 			l = now.getSeconds() + 20; // 20-80%;
 			bgColor = 'hsl(' + h + ' ' + s + '% '+ l + '%)';
-			console.log(bgColor);
+			//console.log(bgColor);
 			document.body.style.backgroundColor = bgColor;
 			document.body.style.color = (l>50) ? '#111' : '#ddd';
 		}
@@ -130,6 +130,12 @@
 			}
 		}
 
+		function getHundredths(millis) {
+			// milliseconds -> hundredths of a second, left padded
+			var n = Math.floor(parseInt(millis)/10); // if millis > 995, Math.round will round up to 100, causing three digits
+			return (n < 10) ? ('0' + n) : n;
+		}
+
 		function update() {
 			// local time in ISO-8601
 			// There does not appear to be a quick way to do this using built-in Date methods
@@ -141,14 +147,14 @@
 
 			document.getElementById('date').innerText = then.toISOString().substring(0, 10);
 			document.getElementById('time').innerText = then.toISOString().substring(11, 19);
-			if (showMilliseconds) { document.getElementById('time').innerHTML += '<small>' + then.toISOString().substring(19, 23) + '</small>'; }
+			if (showHundredths) { document.getElementById('time').innerHTML += '<small>.' + getHundredths(then.toISOString().substring(20, 23)) + '</small>'; }
 
 			document.getElementById('zone').innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
 				'<br><small>' + now.toTimeString().substring(18) + '</small>';
 
 			if (dynamicColors) { setDynamicColors(now); }
 
-			if (showMilliseconds) {
+			if (showHundredths) {
 				if (window.requestAnimationFrame) {
 				window.requestAnimationFrame(update);
 				} else {
