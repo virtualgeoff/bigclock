@@ -14,7 +14,7 @@
 	<style>
 
 		html, body {margin:0; padding:0;}
-		body {height:calc(100vh + 22420px); font-size:1em; font-family:'Courier', monospace;}
+		body {height:calc(100vh + 18365px); font-size:1em; font-family:'Courier', monospace;}
 		nav, main, div {box-sizing:border-box;}
 
 		h1 {}
@@ -37,7 +37,8 @@
 		main h1 {line-height:0.7;}
 
 		#date {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#time {margin:0 0;   font-size:16.5vw; font-weight:normal;}
+		#time {margin:0 0; padding:0 0.3em; font-size:19vw; font-weight:normal;}
+		#setter {margin:1em 0; font-size:1.5em;}
 		#slider {margin:3em 0 0 0; font-size:1.5em;}
 		#slider span {opacity:0.5;}
 		#slider input {width:50vw; padding:0.2em 0; font-size:5vw;}
@@ -78,7 +79,7 @@
 
 		/* jshint esversion: 5 */
 
-		var showHundredths = false;
+		var showHundredths = true; // timer always shows hundredths
 		var dynamicColors = false;
 		var bgColor, h, s, l;
 
@@ -86,7 +87,7 @@
 			// load options from localStorage on page load, and set colors, font, ...
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
+			//showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
 			var timerData  = localStorage.getItem('timerData');
 
 			if (colorScheme) {
@@ -100,9 +101,6 @@
 			}
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
-			}
-			if (showHundredths) {
-				document.getElementById('time').style.fontSize = '15vw';
 			}
 			if (timerData) {
 				Timer.setData( JSON.parse(timerData) );
@@ -145,10 +143,10 @@
 			var isRunning = false,
 				endTime = null,
 				duration = 300000, // = 5 minutes
-				timeRemaining = duration,
-				timerID = null;
+				timeRemaining = duration;
 
-			var years, days, hours, minutes, seconds, milliseconds;
+			var timeStr, years, days, hours, minutes, seconds, hundredths, milliseconds;
+			var fontSize = 19; // vh
 
 			function setData(obj) {
 				// set timer data (on page load)
@@ -157,9 +155,7 @@
 				endTime = obj.endTime;
 				duration = obj.duration;
 				timeRemaining = obj.timeRemaining;
-				if (isRunning) {
-					document.getElementById('start').innerText = 'Pause';
-				}
+				if (isRunning) { document.getElementById('start').innerText = 'Stop'; }
 				update();
 			}
 
@@ -178,10 +174,22 @@
 				localStorage.removeItem('timerData');
 			}
 
-			function setDuration(n) {
-				// bastardised time scale (not liner or exponential)
-				// 1s to 1y changing ~2-3 digits at a time with input range of 1-756 (step=1)
+			function setDuration(form) {
+				// set duration via form
+				if (!isRunning) {
+					duration = (parseInt(form.dd.value * 86400) + parseInt(form.hh.value * 3600) + parseInt(form.mm.value * 60) + parseInt(form.ss.value)) * 1000;
+					timeRemaining = duration;
+					update();
+				}
+			}
+
+			function setDurationScroll() {
+				// set duration via page scroll
+				var n = parseInt(document.documentElement.scrollTop / 20);
+				if (n < 1) n = 1;
 				var d = 1;
+				//console.log(document.documentElement.scrollTop, n);
+
 				if (!isRunning) {
 					if (n <= 60) {
 						d = n; // 0-60s
@@ -193,27 +201,15 @@
 						d = (n-164) * 600 + 3600; // 1-12h in 10m steps
 					} else if (n <= 254) {
 						d = (n-230) * 1800 + 43200; // 12-24h in 30m steps
-					} else if (n <= 398) {
-						d = (n-254) * 3600 + 86400; // 1-7d in 1h steps
-					} else if (n <= 1121) {
-						d = (n-398) * 86400 + 604800; // 7d-2y in 1d steps
+					} else if (n <= 566) {
+						d = (n-254) * 3600 + 86400; // 1-14d in 1h steps
 					} else {
-						d = (n-1121) * 31536000 + 31536000;// 2y+ in 1y steps
+						d = (n-566) * 86400 + 1209600; // 14-999d in 1d steps
 					}
 					duration = d * 1000;
-					//console.log(n, duration);
 					timeRemaining = duration;
 					update();
 				}
-			}
-
-			function setDurationScroll() {
-				// get page scroll and scale it to setDuration
-				// set body height to 100vh + (1121*20)px
-				var n = parseInt(document.documentElement.scrollTop / 20);
-				if (n < 1) n = 1;
-				//console.log(document.documentElement.scrollTop, n);
-				setDuration(n);
 			}
 
 			function start() {
@@ -222,17 +218,10 @@
 					isRunning = false;
 					endTime = null;
 					document.getElementById('start').innerText = 'Start';
-
-					// cancel next scheduled update
-					if (showHundredths) {
-						cancelAnimationFrame(timerID);
-					} else {
-						clearTimeout(timerID);
-					}
 				} else {
 					isRunning = true;
 					endTime = Date.now() + timeRemaining;
-					document.getElementById('start').innerText = 'Pause';
+					document.getElementById('start').innerText = 'Stop';
 				}
 				update();
 				saveData();
@@ -242,62 +231,74 @@
 				// reset timer
 				timeRemaining = duration;
 				endTime = (isRunning) ? (Date.now() + timeRemaining) : null;
-				update();
-				if (isRunning) {
-					saveData();
-				} else {
-					saveData();
-					//deleteData();
 					document.getElementById('start').classList.remove('hide');
 					document.getElementById('start').innerText = 'Start';
-				}
+				saveData();
+				update();
 			}
 
-			// left pad numbers with zeros
 			function pad2(n) {
 				// make 2 digits
 				return (n < 10) ? ('0' + n) : n;
 			}
-
-			function getHundredths(millis) {
-				// milliseconds -> hundredths of a second, left padded
-				var n = Math.floor(parseInt(millis)/10); // if millis > 995, Math.round will round up to 100, causing three digits
-				return pad2(n);
+			function pad3(n) {
+				// make 3 digits
+				return (n < 100) ? ('0' + pad2(n)) : n;
 			}
 
-			function update() {
-				// show alert on next loop after hitting zero
-				if (timeRemaining === 0) {
-					window.alert('Times Up!');
-					isRunning = false;
-					document.getElementById('start').classList.add('hide');
-				}
-				if (isRunning) { timeRemaining = endTime - Date.now(); } // in milliseconds
-				if (timeRemaining < 0) { timeRemaining = 0; }
-
-				milliseconds = timeRemaining % 1000;
-				seconds = Math.floor(timeRemaining/1000);
+			function formatTime(time) {
+				// format the time as yyy:ddd:hh:mm:ss.ss
+				milliseconds = time % 1000;
+				hundredths = Math.floor(milliseconds/10);
+				seconds = Math.floor(time/1000);
 				minutes = Math.floor(seconds/60);
 				hours   = Math.floor(minutes/60);
 				days    = Math.floor(hours/24);
 				years   = Math.floor(days/365);
 
-				document.getElementById('date').innerText = 'Timer' +
-					((years > 1) ? (' : ' + years + ' years') : ((years > 0) ? ' : 1 year' : '')) +
-					((days%365 > 1) ? (' : ' + days%365 + ' days') : ((days%365 > 0) ? ' : 1 day' : ''));
-				document.getElementById('time').innerHTML = pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
+				//timeStr = pad3(years) + ':' + pad3(days % 365) + ':' + pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
+				timeStr = '';
+				if (years > 0) timeStr += pad3(years) + ':';
+				if (days  > 0) timeStr += pad3(days % 365) + ':';
+				if (hours > 0) timeStr += pad2(hours % 24) + ':';
+				timeStr += pad2(minutes % 60) + ':' + pad2(seconds % 60) + '<small>.' + pad2(hundredths) + '</small>';
+				return timeStr;
+			}
 
-				if (showHundredths) {
-					document.getElementById('time').innerHTML += '<small>.' + getHundredths(milliseconds) + '</small>';
+			function checkFontSize() {
+				// check the width of the time element and reduce the font-size until it fits the window
+				if ((document.getElementById('time').clientWidth / window.innerWidth) < 0.8) {
+					fontSize = 19;
+					document.getElementById('time').style.fontSize = fontSize + 'vw';
+					//console.log('font-size reset to 19vw');
 				}
+				while (document.getElementById('time').clientWidth > window.innerWidth) {
+					fontSize -= 0.5;
+					document.getElementById('time').style.fontSize = fontSize + 'vw';
+					//console.log('font-size reduced to ' + fontSize + 'vw');
+				}
+				}
+
+			function update() {
+				// update the timer
+				if (isRunning) { timeRemaining = endTime - Date.now(); } // in milliseconds
+				if (timeRemaining <= 0) {
+					timeRemaining = 0;
+					isRunning = false;
+					document.getElementById('start').classList.add('hide');
+					setTimeout(function(){window.alert('Times up!');}, 20);
+				}
+
+				document.getElementById('time').innerHTML = formatTime(timeRemaining);
+				checkFontSize();
 
 				if (dynamicColors) { setDynamicColors(new Date()); }
 
 				if (isRunning) {
 					if (showHundredths && window.requestAnimationFrame) {
-						timerID = window.requestAnimationFrame(update);
+						window.requestAnimationFrame(update);
 					} else {
-						timerID = setTimeout(update, 1000/60);
+						setTimeout(update, 1000/60);
 					}
 				}
 			}
@@ -345,12 +346,13 @@
 
 	<main>
 		<p id="date">Timer</p>
-		<h1 id="time">00:05:00<small>.0</small></h1>
+		<h1 id="time">05:00<small>.00</small></h1>
 		<p id="buttons">
 			<button type="button" id="start" onclick="Timer.start()">Start</button>
 			<button type="button" id="reset" onclick="Timer.reset()">Reset</button>
 		</p>
-		<p id="slider"><span>drag to set timer duration:</span><br>
+		<p id="setter">Scroll page to set timer...</p>
+		<!-- p id="slider"><span>drag to set timer duration:</span><br>
 			<input id="durationRange" type="range" min="1" max="1122"  step="1" value="84" list="tickmarks" oninput="Timer.setDuration(this.value)">
 			<datalist id="tickmarks">
 				<option value="1"></option>
@@ -366,7 +368,14 @@
 				<option value="756"></option>
 				<option value="1122"></option>
 			</datalist>
-		</p>
+		</p -->
+		<form onsubmit="Timer.setDuration(this); return false;">
+			<input type="number" name="dd" min="0" max="999" value="0">d :
+			<input type="number" name="hh" min="0" max="23" value="0">h :
+			<input type="number" name="mm" min="0" max="59" value="5">m :
+			<input type="number" name="ss" min="0" max="59" value="0">s
+			<input type="submit" value="Set timer">
+		<form>
 	</main>
 
 	<!-- simple analytics -->

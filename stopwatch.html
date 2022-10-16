@@ -24,8 +24,8 @@
 		button {width:5em; padding:0.5em; font-size:3vw; cursor:pointer;}
 		/* for button styling, see: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button */
 
-		table {border:1px solid rgba(128,128,128,0.2); border-collapse:collapse;}
-		th {padding:0.1em 1em; text-align:center; border:1px solid rgba(128,128,128,0.2);}
+		table {margin:0 auto; border:1px solid rgba(128,128,128,0.2); border-collapse:collapse;}
+		th {padding:0.1em 1em; text-align:left;  border:1px solid rgba(128,128,128,0.2);}
 		td {padding:0.1em 1em; text-align:right;  border:1px solid rgba(128,128,128,0.2);}
 
 		a {text-decoration:none;}
@@ -37,10 +37,10 @@
 		main h1 {line-height:0.7;}
 
 		#date {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#time {margin:0 0;   font-size:16.5vw; font-weight:normal;}
+		#time {margin:0 0; padding:0 0.3em; font-size:19vw; font-weight:normal;}
 		#buttons {margin:1em 0; font-size:5vw;  font-weight:200;}
 		#date {opacity:0.28;}
-		#lapTimes {width:27em; margin:1em auto;}
+		#lapTimes {margin:1em auto; text-align:center;}
 
 		/* nav */
 		nav {position:fixed; left:0; top:0; width:100%; margin:0; z-index:99;}
@@ -76,7 +76,7 @@
 
 		/* jshint esversion: 5 */
 
-		var showHundredths = false;
+		var showHundredths = true; // stopwatch always shows hundredths
 		var dynamicColors = false;
 		var bgColor, h, s, l;
 
@@ -84,7 +84,7 @@
 			// load options from localStorage on page load, and set colors, font, ...
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
+			//showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
 			var stopwatchData  = localStorage.getItem('stopwatchData');
 
 			if (colorScheme) {
@@ -98,9 +98,6 @@
 			}
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
-			}
-			if (showHundredths) {
-				document.getElementById('time').style.fontSize = '15vw';
 			}
 			if (stopwatchData) {
 				Stopwatch.setData( JSON.parse(stopwatchData) );
@@ -147,7 +144,8 @@
 				lapTimes = [0],
 				timerID = null;
 
-			var years, days, hours, minutes, seconds, milliseconds;
+			var timeStr, years, days, hours, minutes, seconds, hundredths, milliseconds;
+			var fontSize = 19; // vh
 
 			function setData(obj) {
 				// set stopwatch data (on page load)
@@ -157,12 +155,7 @@
 				stopTime = obj.stopTime;
 				lapTimes = obj.lapTimes;
 
-				if (lapTimes.length > 1) {
-					document.getElementById('lapTimes').classList.remove('hide');
-					for (var i=1; i<lapTimes.length; i++) {
-						document.querySelector('#lapTimes tbody').innerHTML += '<tr><td>' + i + '</td><td>' + lapTimes[i].toFixed(3) + '</td><td>' + (lapTimes[i] - lapTimes[i-1]).toFixed(3) + '</td></tr>';
-					}
-				}
+				if (lapTimes.length > 1) { writeLapTimes(); }
 				if (isRunning) {
 					document.getElementById('start').innerText = 'Pause';
 					document.querySelectorAll('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
@@ -209,18 +202,14 @@
 				}
 				update();
 				document.querySelectorAll('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
-				console.log(elapsedTime);
+				//console.log(elapsedTime);
 				saveData();
 			}
 
 			function lap() {
 				// record and show lap time
-				lapTimes.push(elapsedTime/1000); // in seconds
-				document.getElementById('lapTimes').classList.remove('hide');
-				document.querySelector('#lapTimes tbody').innerHTML += '<tr><td>' + (lapTimes.length-1) + '</td>' +
-					'<td>' + lapTimes[lapTimes.length-1].toFixed(3) + '</td>' +
-					'<td>' + (lapTimes[lapTimes.length-1] - lapTimes[lapTimes.length-2]).toFixed(3) + '</td></tr>';
-				console.log(lapTimes);
+				lapTimes.push(elapsedTime);
+				writeLapTimes();
 				saveData();
 			}
 
@@ -231,9 +220,7 @@
 				elapsedTime = 0;
 				lapTimes = [0];
 				update();
-				document.getElementById('date').innerHTML = 'Stopwatch';
-				document.querySelector('#lapTimes tbody').innerHTML = '';
-				document.getElementById('lapTimes').classList.add('hide');
+				writeLapTimes();
 				deleteData();
 			}
 
@@ -241,31 +228,68 @@
 				// make 2 digits
 				return (n < 10) ? ('0' + n) : n;
 			}
-
-			function getHundredths(millis) {
-				// milliseconds -> hundredths of a second, left padded
-				var n = Math.floor(parseInt(millis)/10); // if millis > 995, Math.round will round up to 100, causing three digits
-				return pad2(n);
+			function pad3(n) {
+				// make 3 digits
+				return (n < 100) ? ('0' + pad2(n)) : n;
 			}
 
-			function update() {
-				elapsedTime = ((isRunning ? Date.now() : stopTime) - startTime); // in milliseconds
+			function writeLapTimes() {
+				// write all the lap times
+				// TODO: find the fastest and slowest times and color them green and red respectively
+				var tbody = document.querySelector('#lapTimes tbody');
 
-				milliseconds = elapsedTime % 1000;
-				seconds = Math.floor(elapsedTime/1000);
+				// remove any rows apart from first (2nd including text nodes)
+				while (tbody.childNodes.length > 2) {
+					tbody.removeChild(tbody.lastChild);
+			}
+
+				// number current lap
+				document.getElementById('CL1').innerText = lapTimes.length;
+
+				// add rows for previous laps
+				for (var i=lapTimes.length-1; i>0; i--) {
+					document.querySelector('#lapTimes tbody').innerHTML += '<tr><td>' + i + '</td><td>' +
+						formatTime(lapTimes[i]) + '</td><td>' + formatTime(lapTimes[i] - lapTimes[i-1]) + '</td></tr>';
+				}
+				//console.log(lapTimes);
+			}
+
+			function formatTime(time) {
+				// format the time as yyy:ddd:hh:mm:ss.ss
+				milliseconds = time % 1000;
+				hundredths = Math.floor(milliseconds/10);
+				seconds = Math.floor(time/1000);
 				minutes = Math.floor(seconds/60);
 				hours   = Math.floor(minutes/60);
 				days    = Math.floor(hours/24);
 				years   = Math.floor(days/365);
 
-				document.getElementById('date').innerText = 'Stopwatch' +
-					((years > 1) ? (' : ' + years + ' years') : ((years > 0) ? ' : 1 year' : '')) +
-					((days%365 > 1) ? (' : ' + days%365 + ' days') : ((days%365 > 0) ? ' : 1 day' : ''));
-				document.getElementById('time').innerHTML = pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
+				//timeStr = pad3(years) + ':' + pad3(days % 365) + ':' + pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
+				timeStr = '';
+				if (years > 0) timeStr += pad3(years) + ':';
+				if (days  > 0) timeStr += pad3(days % 365) + ':';
+				if (hours > 0) timeStr += pad2(hours % 24) + ':';
+				timeStr += pad2(minutes % 60) + ':' + pad2(seconds % 60) + '<small>.' + pad2(hundredths) + '</small>';
+				return timeStr;
+			}
 
-				if (showHundredths) {
-					document.getElementById('time').innerHTML += '<small>.' + getHundredths(milliseconds) + '</small>';
+			function checkFontSize() {
+				// check the width of the time element and reduce the font-size until it fits the window
+				while (document.getElementById('time').clientWidth > window.innerWidth) {
+					fontSize -= 0.5;
+					document.getElementById('time').style.fontSize = fontSize + 'vw';
+					//console.log('font-size reduced to ' + fontSize + 'vw');
 				}
+				}
+
+			function update() {
+				elapsedTime = ((isRunning ? Date.now() : stopTime) - startTime); // in milliseconds
+				document.getElementById('time').innerHTML = formatTime(elapsedTime);
+				checkFontSize();
+
+				// write current lap
+				document.getElementById('CL2').innerHTML = formatTime(elapsedTime);
+				document.getElementById('CL3').innerHTML = formatTime(elapsedTime - lapTimes[lapTimes.length-1]);
 
 				if (dynamicColors) { setDynamicColors(new Date()); }
 
@@ -319,7 +343,7 @@
 
 	<main>
 		<p id="date">Stopwatch</p>
-		<h1 id="time">00:00:00<small>.0</small></h1>
+		<h1 id="time">00:00<small>.00</small></h1>
 		<p id="buttons">
 			<button type="button" id="start" onclick="Stopwatch.start()">Start</button>
 			<button type="button" id="lap" class="hide" onclick="Stopwatch.lap()">Lap</button>
@@ -327,8 +351,8 @@
 		</p>
 	</main>
 
-	<div id="lapTimes" class="hide">
-		<h2>Lap Times</h2>
+	<div id="lapTimes">
+		<!-- h2>Lap Times</h2 -->
 		<table>
 			<thead>
 				<tr>
@@ -338,6 +362,11 @@
 				</tr>
 			</thead>
 			<tbody>
+				<tr id="currentLap">
+					<td id="CL1">1</td>
+					<td id="CL2">00:00<small>.00</small></td>
+					<td id="CL3">00:00<small>.00</small></td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

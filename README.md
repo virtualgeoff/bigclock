@@ -6,5 +6,3 @@ The clock is big, but the pages are ultra-minimal: one request and less than 16 
 
 Feedback welcome. I’m especially interested in hearing about how it works on old browsers and phones.
 
-
-
