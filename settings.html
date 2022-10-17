@@ -19,9 +19,11 @@
 
 		h1 {}
 		h2 {margin:2em 0 0.5em 0; font-size:1.2em;}
-		p {margin:1em 0 1em 3em; line-height:1.4;}
+		p {margin:1em 0 1em 3rem; line-height:1.4;}
 		small {font-size:0.75em;}
 		label {white-space:nowrap;}
+	 	.note {margin-top:-0.5em; font-size:0.75em;}
+	 	ul.note {margin:-1em 0 1em 2rem;}
 
 		a {text-decoration:none;}
 		a:hover {text-decoration:underline;}
@@ -235,11 +237,15 @@
 					</optgroup>
 				</select>
 			</p>
-			<p>(not all fonts are available on all devices)</p>
+			<p class="note">Note: not all fonts are available on all devices.</p>
 
 			<h2>Time</h2>
-			<p><label><input type="checkbox" name="showHundredths" onchange="setOption(this)"> show hundredths of a second</label><br>
-			<small>Note: when selected, the clocks will animate at ~60 fps (depending on the device). This means the accuracy is no better than 17 ms, or ±0.02 s.</small></p>
+			<p><label><input type="checkbox" name="showHundredths" onchange="setOption(this)"> show hundredths of a second</label></p>
+			<p class="note">Note: accuracy is limited by device frame rate:</p>
+			<ul class="note">
+				<li>±17 ms (±0.02 s) at 60 fps</li>
+				<li>±33 ms (±0.03 s) at 30 fps</li>
+			</ul>
 		</form>
 	</main>
 
