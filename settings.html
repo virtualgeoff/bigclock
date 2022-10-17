@@ -39,18 +39,18 @@
 		nav svg {width:1.625em; height:1.625em;}
 
 		/* colors */
-		body, body.light {color:#111; background:#fff;}
-		body.dark {color:#ddd; background:#000;}
+		body, body.Light {color:#111; background:#fff;}
+		body.Dark {color:#ddd; background:#000;}
 
-		a, body.light a {color:#00e;}
-		a:visited, body.light a:visited {color:#808;}
-		nav a, nav a:visited, body.light nav a, body.light nav a:visited {color:#666;}
-		nav a:hover, body.light nav a:hover {color:#f00;}
+		a, body.Light a {color:#00e;}
+		a:visited, body.Light a:visited {color:#808;}
+		nav a, nav a:visited, body.Light nav a, body.Light nav a:visited {color:#666;}
+		nav a:hover, body.Light nav a:hover {color:#f00;}
 
-		body.dark a {color:#07d;}
-		body.dark a:visited {color:#d7d;}
-		body.dark nav a, body.dark nav a:visited {color:#999;}
-		body.dark nav a:hover {color:#c00;}
+		body.Dark a {color:#07d;}
+		body.Dark a:visited {color:#d7d;}
+		body.Dark nav a, body.Dark nav a:visited {color:#999;}
+		body.Dark nav a:hover {color:#c00;}
 
 		@media (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
@@ -74,14 +74,14 @@
 			var radio = null, option = null, checkbox = null;
 
 			if (colorScheme) {
-				document.body.classList.remove('auto', 'light', 'dark', 'dynamic', 'custom');
+				document.body.classList.remove('Auto', 'Light', 'Dark', 'Dynamic', 'Custom');
 				document.body.classList.add(colorScheme);
-				radio = document.querySelector('input[value='+colorScheme+']');
+				radio = document.getElementById('colorScheme'+colorScheme);
 				if (radio) { radio.checked = true; } // set radio button
 
-				if (colorScheme === 'dynamic') {
+				if (colorScheme === 'Dynamic') {
 					setDynamicColors(new Date());
-				} else if (colorScheme === 'custom') {
+				} else if (colorScheme === 'Custom') {
 					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
 					document.body.style.color = localStorage.getItem('colorText') || '#000000';
 				} else {
@@ -90,8 +90,8 @@
 				}
 			}
 			// set color inputs (even if colorScheme is not currently 'custom', or even set)
-			document.querySelector('input[name="colorBG"]').value   = localStorage.getItem('colorBG') || '#ff7700';
-			document.querySelector('input[name="colorText"]').value = localStorage.getItem('colorText') || '#000000';
+			document.getElementById('colorBG').value   = localStorage.getItem('colorBG') || '#ff7700';
+			document.getElementById('colorText').value = localStorage.getItem('colorText') || '#000000';
 
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
@@ -99,7 +99,7 @@
 				if (option) { option.selected = 'selected'; } // set select option
 			}
 			if (showHundredths) {
-				checkbox = document.querySelector('input[name="showHundredths"]');
+				checkbox = document.getElementById('showHundredths');
 				if (checkbox) { checkbox.checked = (showHundredths) ? true : false; } // set checkbox
 			}
 		}
@@ -186,14 +186,14 @@
 		<form>
 			<h2>Color scheme</h2>
 			<p>
-				<label><input type="radio" name="colorScheme" value="auto"  onchange="setOption(this)" checked> auto (system)</label><br>
-				<label><input type="radio" name="colorScheme" value="light" onchange="setOption(this)"> light</label><br>
-				<label><input type="radio" name="colorScheme" value="dark"  onchange="setOption(this)"> dark</label><br>
-				<label><input type="radio" name="colorScheme" value="dynamic" onchange="setOption(this)"> dynamic (color changes with time)</label><br>
-				<label><input type="radio" id="colorSchemeCustom" name="colorScheme" value="custom"  onchange="setOption(this)"> custom:</label> &nbsp;
+				<label><input type="radio" name="colorScheme" id="colorSchemeAuto"    value="Auto"    onchange="setOption(this)" checked> auto (system)</label><br>
+				<label><input type="radio" name="colorScheme" id="colorSchemeLight"   value="Light"   onchange="setOption(this)"> light</label><br>
+				<label><input type="radio" name="colorScheme" id="colorSchemeDark"    value="Dark"    onchange="setOption(this)"> dark</label><br>
+				<label><input type="radio" name="colorScheme" id="colorSchemeDynamic" value="Dynamic" onchange="setOption(this)"> dynamic (color changes with time)</label><br>
+				<label><input type="radio" name="colorScheme" id="colorSchemeCustom"  value="Custom"  onchange="setOption(this)"> custom:</label> &nbsp;
 
-				<label><input type="color" name="colorText" value="#000000" onchange="setOption(this)"> text</label> &nbsp;
-				<label><input type="color" name="colorBG"   value="#ff7700" onchange="setOption(this)"> background</label>
+				<label><input type="color" name="colorText" id="colorText" value="#000000" onchange="setOption(this)"> text</label> &nbsp;
+				<label><input type="color" name="colorBG"   id="colorBG"   value="#ff7700" onchange="setOption(this)"> background</label>
 			</p>
 
 			<h2>Font</h2>
@@ -242,7 +242,7 @@
 			<p class="note">Note: not all fonts are available on all devices.</p>
 
 			<h2>Time</h2>
-			<p><label><input type="checkbox" name="showHundredths" onchange="setOption(this)"> show hundredths of a second</label></p>
+			<p><label><input type="checkbox" name="showHundredths" id="showHundredths" onchange="setOption(this)"> show hundredths of a second</label></p>
 			<p class="note">Note: accuracy is limited by device frame rate:</p>
 			<ul class="note">
 				<li>±17 ms (±0.02 s) at 60 fps</li>

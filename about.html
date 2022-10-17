@@ -44,18 +44,18 @@
 		nav svg {width:1.625em; height:1.625em;}
 
 		/* colors */
-		body, body.light {color:#111; background:#fff;}
-		body.dark {color:#ddd; background:#000;}
+		body, body.Light {color:#111; background:#fff;}
+		body.Dark {color:#ddd; background:#000;}
 
-		a, body.light a {color:#00e;}
-		a:visited, body.light a:visited {color:#808;}
-		nav a, nav a:visited, body.light nav a, body.light nav a:visited {color:#666;}
-		nav a:hover, body.light nav a:hover {color:#f00;}
+		a, body.Light a {color:#00e;}
+		a:visited, body.Light a:visited {color:#808;}
+		nav a, nav a:visited, body.Light nav a, body.Light nav a:visited {color:#666;}
+		nav a:hover, body.Light nav a:hover {color:#f00;}
 
-		body.dark a {color:#07d;}
-		body.dark a:visited {color:#d7d;}
-		body.dark nav a, body.dark nav a:visited {color:#999;}
-		body.dark nav a:hover {color:#c00;}
+		body.Dark a {color:#07d;}
+		body.Dark a:visited {color:#d7d;}
+		body.Dark nav a, body.Dark nav a:visited {color:#999;}
+		body.Dark nav a:hover {color:#c00;}
 
 		@media (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
@@ -77,9 +77,9 @@
 
 			if (colorScheme) {
 				document.body.classList.add(colorScheme);
-				if (colorScheme === 'dynamic') {
+				if (colorScheme === 'Dynamic') {
 					setDynamicColors(new Date());
-				} else if (colorScheme === 'custom') {
+				} else if (colorScheme === 'Custom') {
 					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
 					document.body.style.color = localStorage.getItem('colorText') || '#000000';
 				}
