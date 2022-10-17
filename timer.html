@@ -92,9 +92,9 @@
 
 			if (colorScheme) {
 				document.body.classList.add(colorScheme);
-				if (colorScheme === 'dynamic') {
+				if (colorScheme === 'Dynamic') {
 					dynamicColors = true;
-				} else if (colorScheme === 'custom') {
+				} else if (colorScheme === 'Custom') {
 					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
 					document.body.style.color = localStorage.getItem('colorText') || '#000000';
 				}

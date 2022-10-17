@@ -89,9 +89,9 @@
 
 			if (colorScheme) {
 				document.body.classList.add(colorScheme);
-				if (colorScheme === 'dynamic') {
+				if (colorScheme === 'Dynamic') {
 					dynamicColors = true;
-				} else if (colorScheme === 'custom') {
+				} else if (colorScheme === 'Custom') {
 					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
 					document.body.style.color = localStorage.getItem('colorText') || '#000000';
 				}
@@ -158,7 +158,8 @@
 				if (lapTimes.length > 1) { writeLapTimes(); }
 				if (isRunning) {
 					document.getElementById('start').innerText = 'Pause';
-					document.querySelectorAll('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
+					document.getElementById('lap').classList.toggle('hide');
+					document.getElementById('reset').classList.toggle('hide');
 				}
 				update();
 			}
@@ -201,7 +202,8 @@
 					document.getElementById('start').innerText = 'Pause';
 				}
 				update();
-				document.querySelectorAll('#lap, #reset').forEach(function(button) { button.classList.toggle('hide'); });
+				document.getElementById('lap').classList.toggle('hide');
+				document.getElementById('reset').classList.toggle('hide');
 				//console.log(elapsedTime);
 				saveData();
 			}
@@ -236,7 +238,7 @@
 			function writeLapTimes() {
 				// write all the lap times
 				// TODO: find the fastest and slowest times and color them green and red respectively
-				var tbody = document.querySelector('#lapTimes tbody');
+				var tbody = document.getElementById('lapTimesTBody');
 
 				// remove any rows apart from first (2nd including text nodes)
 				while (tbody.childNodes.length > 2) {
@@ -248,7 +250,7 @@
 
 				// add rows for previous laps
 				for (var i=lapTimes.length-1; i>0; i--) {
-					document.querySelector('#lapTimes tbody').innerHTML += '<tr><td>' + i + '</td><td>' +
+					document.getElementById('lapTimesTBody').innerHTML += '<tr><td>' + i + '</td><td>' +
 						formatTime(lapTimes[i]) + '</td><td>' + formatTime(lapTimes[i] - lapTimes[i-1]) + '</td></tr>';
 				}
 				//console.log(lapTimes);
@@ -348,7 +350,7 @@
 		<h1 id="time">00:00<small>.00</small></h1>
 		<p id="buttons">
 			<button type="button" id="start" onclick="Stopwatch.start()">Start</button>
-			<button type="button" id="lap" class="hide" onclick="Stopwatch.lap()">Lap</button>
+			<button type="button" id="lap"   onclick="Stopwatch.lap()"class="hide">Lap</button>
 			<button type="button" id="reset" onclick="Stopwatch.reset()">Reset</button>
 		</p>
 	</main>
@@ -363,7 +365,7 @@
 					<th>Lap time:</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id="lapTimesTBody">
 				<tr id="currentLap">
 					<td id="CL1">1</td>
 					<td id="CL2">00:00<small>.00</small></td>
