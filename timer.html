@@ -177,6 +177,8 @@
 				timeRemaining = obj.timeRemaining;
 				if (isRunning) { document.getElementById('start').innerText = 'Stop'; }
 				update();
+				if (dynamicColors && !isRunning) { setDynamicColors(new Date(timeRemaining)); } // to make up not updating colors in update
+
 			}
 
 			function saveData() {
@@ -207,8 +209,8 @@
 				// set duration via page scroll
 				var n = parseInt(document.documentElement.scrollTop / 20);
 				if (n < 1) n = 1;
-				var d = 1;
 				//console.log(document.documentElement.scrollTop, n);
+				var d = 1;
 
 				if (!isRunning) {
 					if (n <= 60) {
@@ -252,7 +254,6 @@
 				timeRemaining = duration;
 				endTime = (isRunning) ? (Date.now() + timeRemaining) : null;
 					document.getElementById('start').classList.remove('hide');
-					document.getElementById('start').innerText = 'Start';
 				saveData();
 				update();
 			}
@@ -274,12 +275,13 @@
 				minutes = Math.floor(seconds/60);
 				hours   = Math.floor(minutes/60);
 				days    = Math.floor(hours/24);
-				years   = Math.floor(days/365);
+				//years   = Math.floor(days/365);
 
 				//timeStr = pad3(years) + ':' + pad3(days % 365) + ':' + pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
 				timeStr = '';
-				if (years > 0) timeStr += pad3(years) + ':';
-				if (days  > 0) timeStr += pad3(days % 365) + ':';
+				//if (years > 0) timeStr += pad3(years) + ':';
+				//if (days  > 0) timeStr += pad3(days % 365) + ':';
+				if (days  > 0) timeStr += pad3(days) + ':';
 				if (hours > 0) timeStr += pad2(hours % 24) + ':';
 				timeStr += pad2(minutes % 60) + ':' + pad2(seconds % 60) + '<small>.' + pad2(hundredths) + '</small>';
 				return timeStr;
