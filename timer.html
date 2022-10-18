@@ -37,13 +37,15 @@
 		main h1 {line-height:0.7;}
 
 		#date {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#time {margin:0 0; padding:0 0.3em; font-size:19vw; font-weight:normal;}
-		#setter {margin:1em 0; font-size:1.5em;}
-		#slider {margin:3em 0 0 0; font-size:1.5em;}
-		#slider span {opacity:0.5;}
-		#slider input {width:50vw; padding:0.2em 0; font-size:5vw;}
-		#buttons {margin:1em 0; font-size:5vw;  font-weight:200;}
-		#date {opacity:0.28;}
+		#time {margin:0; padding:0 0.3em; font-size:19vw; font-weight:400;}
+		#buttons {margin:1em 0 0 0; font-size:5vw;}
+		#date {opacity:0.4;}
+
+		#setTimerText {margin:0 0 1em 0; padding:6px 0; font-size:1.5em;}
+		#setTimerForm {display:none; margin:0 0 1em 0; font-size:1.5em;}
+		#setTimerForm input {margin-right:2px; width:2em; font-size:1.0em;} /* width for firefox */
+		#setTimerForm input[name="dd"] {width:2.5em;}
+		#setTimerForm input[type="submit"] {width:3em;}
 
 		/* nav */
 		nav {position:fixed; left:0; top:0; width:100%; margin:0; z-index:99;}
@@ -143,6 +145,17 @@
 					dE.webkitRequestFullScreen();
 				}
 			}
+		}
+
+		function showTimerForm() {
+			document.getElementById('setTimerForm').style.display = 'block';
+			document.getElementById('setTimerText').style.display = 'none';
+			return false;
+		}
+		function hideTimerForm() {
+			document.getElementById('setTimerForm').style.display = 'none';
+			document.getElementById('setTimerText').style.display = 'block';
+			return false;
 		}
 
 		var Timer = (function() {
@@ -364,30 +377,13 @@
 			<button type="button" id="start" onclick="Timer.start()">Start</button>
 			<button type="button" id="reset" onclick="Timer.reset()">Reset</button>
 		</p>
-		<p id="setter">Scroll page to set timer...</p>
-		<!-- p id="slider"><span>drag to set timer duration:</span><br>
-			<input id="durationRange" type="range" min="1" max="1122"  step="1" value="84" list="tickmarks" oninput="Timer.setDuration(this.value)">
-			<datalist id="tickmarks">
-				<option value="1"></option>
-				<option value="60"></option>
-				<option value="114"></option>
-				<option value="164"></option>
-				<option value="230"></option>
-				<option value="254"></option>
-				<option value="398"></option>
-				<option value="421"></option>
-				<option value="481"></option>
-				<option value="571"></option>
-				<option value="756"></option>
-				<option value="1122"></option>
-			</datalist>
-		</p -->
-		<form onsubmit="Timer.setDuration(this); return false;">
-			<input type="number" name="dd" min="0" max="999" value="0">d :
-			<input type="number" name="hh" min="0" max="23" value="0">h :
-			<input type="number" name="mm" min="0" max="59" value="5">m :
-			<input type="number" name="ss" min="0" max="59" value="0">s
-			<input type="submit" value="Set timer">
+		<p id="setTimerText">Scroll page to set timer... or set <a href="#setTimerForm" onclick="return showTimerForm()">manually</a>.</p>
+		<form id="setTimerForm" onsubmit="Timer.setDuration(this); return hideTimerForm();">
+			<input type="number" name="dd" min="0" max="999" value="0">d:<!--
+			--><input type="number" name="hh" min="0" max="23" value="0">h:<!--
+			--><input type="number" name="mm" min="0" max="59" value="5">m:<!--
+			--><input type="number" name="ss" min="0" max="59" value="0">s
+			<input type="submit" value="Set">
 		</form>
 	</main>
 
