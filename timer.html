@@ -78,7 +78,7 @@
 
 		var showHundredths = true; // timer always shows hundredths
 		var dynamicColors = false;
-		var bgColor, h, s, l;
+		var textColor, bgColor, h, s, l;
 
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
@@ -92,8 +92,9 @@
 				if (colorScheme === 'Dynamic') {
 					dynamicColors = true;
 				} else if (colorScheme === 'Custom') {
-					document.body.style.backgroundColor = localStorage.getItem('colorBG') || '#ff7700';
-					document.body.style.color = localStorage.getItem('colorText') || '#000000';
+					textColor = localStorage.getItem('colorText') || '#000000';
+					bgColor   = localStorage.getItem('colorBG')   || '#ff7700';
+					changeColors(textColor, bgColor);
 				}
 			}
 			if (fontFamily) {
@@ -108,11 +109,20 @@
 			// set colors based on the current local time
 			h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
 			s = now.getMinutes() + 40; // 40-100%
-			l = now.getSeconds() + 20; // 20-80%;
+			l = (now.getSeconds() + now.getMilliseconds()/1000) + 20; // 20-80%;
 			bgColor = 'hsl(' + h + ' ' + s + '% '+ l + '%)';
-			//console.log(bgColor);
+			textColor = (l>50) ? '#111' : '#ddd';
+			changeColors(textColor, bgColor);
+		}
+
+		function changeColors(textColor, bgColor) {
+			// change text, link, and background colors
 			document.body.style.backgroundColor = bgColor;
-			document.body.style.color = (l>50) ? '#111' : '#ddd';
+			document.body.style.color = textColor;
+
+			for (var i=0; i<document.links.length; i++) {
+				document.links[i].style.color = textColor;
+			}
 		}
 
 		function fullscreen(e) {
@@ -289,7 +299,7 @@
 				document.getElementById('time').innerHTML = formatTime(timeRemaining);
 				checkFontSize();
 
-				if (dynamicColors) { setDynamicColors(new Date()); }
+				if (dynamicColors && isRunning) { setDynamicColors(new Date(timeRemaining)); } // && isRunning prevents colors flashing when setting duration
 
 				if (isRunning) {
 					if (showHundredths && window.requestAnimationFrame) {
