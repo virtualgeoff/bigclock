@@ -28,8 +28,8 @@
 		th {padding:0.1em 1em; text-align:left;  border:1px solid rgba(128,128,128,0.2);}
 		td {padding:0.1em 1em; text-align:right;  border:1px solid rgba(128,128,128,0.2);}
 
-		a {text-decoration:none;}
-		a:hover {text-decoration:underline;}
+		a {text-decoration:none; opacity:60%}
+		a:hover {text-decoration:underline; opacity:100%}
 
 		/* layout */
 		main {width:100vw; height:80vh; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly;}
@@ -50,25 +50,22 @@
 		nav svg {width:1.625em; height:1.625em;}
 
 		/* colors */
-		body, body.Light {color:#111; background:#fff;}
+		body {color:#111; background:#fff;}
+		a {color:#111;}
+		a:visited {color:#111;}
+
+		body.Light {color:#111; background:#fff;}
+		body.Light a {color:#111;}
+		body.Light a:visited {color:#111;}
+
 		body.Dark {color:#ddd; background:#000;}
-
-		a, body.Light a {color:#00e;}
-		a:visited, body.Light a:visited {color:#808;}
-		nav a, nav a:visited, body.Light nav a, body.Light nav a:visited {color:#666;}
-		nav a:hover, body.Light nav a:hover {color:#f00;}
-
-		body.Dark a {color:#07d;}
-		body.Dark a:visited {color:#d7d;}
-		body.Dark nav a, body.Dark nav a:visited {color:#999;}
-		body.Dark nav a:hover {color:#c00;}
+		body.Dark a {color:#ddd;}
+		body.Dark a:visited {color:#ddd;}
 
 		@media (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
-			a {color:#07d;}
-			a:visited {color:#d7d;}
-			nav a, nav a:visited {color:#999;}
-			nav a:hover {color:#c00;}
+			a {color:#eee;}
+			a:visited {color:#eee;}
 		}
 
 	</style>

@@ -22,14 +22,14 @@
 		p {margin-bottom:1.5em; line-height:1.4;}
 		small {font-size:0.75em;}
 
-		a {text-decoration:none;}
-		a:hover {text-decoration:underline;}
+		a {text-decoration:none; opacity:60%}
+		a:hover {text-decoration:underline; opacity:100%}
 
 		#bmc {margin:2em 0; text-align:center;}
 		#bmc svg {height:1.3em; margin:0 0.4em 0.15em 0; vertical-align:middle;}
-		#bmc a {padding:0.7em 0.9em; font-size:1.2em; font-style:italic; text-decoration:none; background:#fd0; border-radius:0.5em;}
+		#bmc a {padding:0.7em 0.9em; font-size:1.2em; font-style:italic; text-decoration:none; background:#fd0; opacity:80%; border-radius:0.5em;}
 		#bmc a, #bmc a:visited {color:#000;}
-		#bmc a:hover {color:#f00;}
+		#bmc a:hover {color:#f00; opacity:100%;}
 
 		#more {margin-top:3em; font-size:0.8em; text-align:center;}
 
@@ -44,25 +44,22 @@
 		nav svg {width:1.625em; height:1.625em;}
 
 		/* colors */
-		body, body.Light {color:#111; background:#fff;}
+		body {color:#111; background:#fff;}
+		a {color:#111;}
+		a:visited {color:#111;}
+
+		body.Light {color:#111; background:#fff;}
+		body.Light a {color:#111;}
+		body.Light a:visited {color:#111;}
+
 		body.Dark {color:#ddd; background:#000;}
-
-		a, body.Light a {color:#00e;}
-		a:visited, body.Light a:visited {color:#808;}
-		nav a, nav a:visited, body.Light nav a, body.Light nav a:visited {color:#666;}
-		nav a:hover, body.Light nav a:hover {color:#f00;}
-
-		body.Dark a {color:#07d;}
-		body.Dark a:visited {color:#d7d;}
-		body.Dark nav a, body.Dark nav a:visited {color:#999;}
-		body.Dark nav a:hover {color:#c00;}
+		body.Dark a {color:#ddd;}
+		body.Dark a:visited {color:#ddd;}
 
 		@media (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
-			a {color:#07d;}
-			a:visited {color:#d7d;}
-			nav a, nav a:visited {color:#999;}
-			nav a:hover {color:#c00;}
+			a {color:#eee;}
+			a:visited {color:#eee;}
 		}
 
 	</style>
