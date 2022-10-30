@@ -143,10 +143,10 @@
 		function update() {
 			// UTC, formatted in ISO-8601
 			now = new Date();
-			document.getElementById('date').innerText = now.toISOString().substring(0, 10);
-			document.getElementById('time').innerText = now.toISOString().substring(11, 19);
-			if (showHundredths) { document.getElementById('time').innerHTML += '<small>.' + getHundredths(now.toISOString().substring(20, 23)) + '</small>'; }
-			document.getElementById('zone').innerText = 'UTC';
+			document.getElementById('date').innerText = now.toISOString().split('T')[0];
+			document.getElementById('time').innerText = now.toISOString().split('T')[1].split('.')[0];
+			if (showHundredths) { document.getElementById('time').innerHTML += '<small>.' + getHundredths( now.getUTCMilliseconds() ) + '</small>'; }
+			document.getElementById('zone').innerHTML = 'Z<br><small>(UTC)</small>';
 
 			if (dynamicColors) { setDynamicColors(now); }
 
