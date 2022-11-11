@@ -150,7 +150,7 @@
 				if (window.requestAnimationFrame) {
 					window.requestAnimationFrame(update);
 				} else {
-					setTimeout(update, 1000/60);
+					setTimeout(update, 1000/30);
 				}
 			} else {
 				setTimeout(update, (1000 - now.getMilliseconds()));
