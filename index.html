@@ -62,7 +62,7 @@
 
 		/* jshint esversion: 5 */
 
-		var now;
+		var date, time, zone, now;
 		var showHundredths = false;
 		var colors = {dynamic:false};
 
@@ -88,9 +88,6 @@
 			if (showHundredths) {
 				document.getElementById('time').style.fontSize = '15vw';
 			}
-
-			// update clock
-			update();
 		}
 
 		function setDynamicColors(now) {
@@ -148,10 +145,10 @@
 			// local time in ISO-8601
 			now  = new Date();
 			// toTimeString is always hh:mm:ss GMT±xxxx (TZ), but there's no quick way to get local date in ISO-8601 format, so
-			document.getElementById('date').innerText = now.getFullYear() + '-' + pad2(now.getMonth()) + '-' + pad2(now.getDate());
-			document.getElementById('time').innerText = now.toTimeString().substring(0, 8);
-			if (showHundredths) { document.getElementById('time').innerHTML += '<small>.' + getHundredths(now.getMilliseconds()) + '</small>'; }
-			document.getElementById('zone').innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
+			date.innerText = now.getFullYear() + '-' + pad2(now.getMonth()) + '-' + pad2(now.getDate());
+			time.innerText = now.toTimeString().substring(0, 8);
+			if (showHundredths) { time.innerHTML += '<small>.' + getHundredths(now.getMilliseconds()) + '</small>'; }
+			zone.innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
 				'<br><small>' + now.toTimeString().substring(18) + '</small>';
 
 			if (colors.dynamic) { setDynamicColors(now); }
@@ -167,7 +164,15 @@
 			}
 		}
 
-		window.addEventListener('DOMContentLoaded', getOptions);
+		function init() {
+			date = document.getElementById('date');
+			time = document.getElementById('time');
+			zone = document.getElementById('zone');
+			getOptions();
+			update();
+		}
+
+		window.addEventListener('DOMContentLoaded', init);
 
 	</script>
 </head>

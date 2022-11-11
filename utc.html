@@ -62,7 +62,7 @@
 
 		/* jshint esversion: 5 */
 
-		var now;
+		var date, time, zone, now;
 		var showHundredths = false;
 		var colors = {dynamic:false};
 
@@ -88,9 +88,6 @@
 			if (showHundredths) {
 				document.getElementById('time').style.fontSize = '15vw';
 			}
-
-			// update clock
-			update();
 		}
 
 		function setDynamicColors(now) {
@@ -142,16 +139,16 @@
 		function update() {
 			// UTC, formatted in ISO-8601
 			now = new Date();
-			document.getElementById('date').innerText = now.toISOString().split('T')[0];
-			document.getElementById('time').innerText = now.toISOString().split('T')[1].split('.')[0];
-			if (showHundredths) { document.getElementById('time').innerHTML += '<small>.' + getHundredths( now.getUTCMilliseconds() ) + '</small>'; }
-			document.getElementById('zone').innerHTML = 'Z<br><small>(UTC)</small>';
+			date.innerText = now.toISOString().split('T')[0];
+			time.innerText = now.toISOString().split('T')[1].split('.')[0];
+			if (showHundredths) { time.innerHTML += '<small>.' + getHundredths( now.getUTCMilliseconds() ) + '</small>'; }
+			zone.innerHTML = 'Z<br><small>(UTC)</small>';
 
 			if (colors.dynamic) { setDynamicColors(now); }
 
 			if (showHundredths) {
 				if (window.requestAnimationFrame) {
-				window.requestAnimationFrame(update);
+					window.requestAnimationFrame(update);
 				} else {
 					setTimeout(update, 1000/60);
 				}
@@ -160,7 +157,15 @@
 			}
 		}
 
-		window.addEventListener('DOMContentLoaded', getOptions);
+		function init() {
+			date = document.getElementById('date');
+			time = document.getElementById('time');
+			zone = document.getElementById('zone');
+			getOptions();
+			update();
+		}
+
+		window.addEventListener('DOMContentLoaded', init);
 
 	</script>
 </head>
