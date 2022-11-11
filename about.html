@@ -66,7 +66,7 @@
 
 		/* jshint esversion: 5 */
 
-		var textColor, bgColor, h, s, l;
+		var colors = {};
 
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
@@ -78,9 +78,9 @@
 				if (colorScheme === 'Dynamic') {
 					setDynamicColors(new Date());
 				} else if (colorScheme === 'Custom') {
-					textColor = localStorage.getItem('colorText') || '#000000';
-					bgColor   = localStorage.getItem('colorBG')   || '#ff7700';
-					changeColors(textColor, bgColor);
+					colors.text = localStorage.getItem('colorText') || '#000000';
+					colors.bg   = localStorage.getItem('colorBG')   || '#ff7700';
+					changeColors();
 				}
 			}
 			if (fontFamily) {
@@ -93,21 +93,21 @@
 
 		function setDynamicColors(now) {
 			// set colors based on the current local time
-			h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
-			s = now.getMinutes() + 40; // 40-100%
-			l = (now.getSeconds() + now.getMilliseconds()/1000) + 20; // 20-80%;
-			bgColor = 'hsl(' + h + ' ' + s + '% '+ l + '%)';
-			textColor = (l>50) ? '#111' : '#ddd';
-			changeColors(textColor, bgColor);
+			colors.h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
+			colors.s = now.getMinutes() + 40; // 40-100%
+			colors.l = (now.getSeconds() + now.getMilliseconds()/1000) + 20; // 20-80%;
+			colors.bg = 'hsl(' + colors.h + ' ' + colors.s + '% '+ colors.l + '%)';
+			colors.text = (colors.l>50) ? '#111' : '#ddd';
+			changeColors();
 		}
 
-		function changeColors(textColor, bgColor) {
+		function changeColors() {
 			// change text, link, and background colors
-			document.body.style.backgroundColor = bgColor;
-			document.body.style.color = textColor;
+			document.body.style.backgroundColor = colors.bg;
+			document.body.style.color = colors.text;
 
 			for (var i=0; i<document.links.length; i++) {
-				if (document.links[i].parentNode.id !== "bmc") { document.links[i].style.color = textColor };
+				if (document.links[i].parentNode.id !== "bmc") { document.links[i].style.color = colors.text; }
 			}
 		}
 
