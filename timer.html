@@ -79,8 +79,27 @@
 		var showHundredths = true; // timer always shows hundredths
 		var colors = {dynamic:false};
 
+		function storageAvailable(type) {
+			// see https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+			try {
+				var storage = window[type],
+					x = '__storage_test__';
+				storage.setItem(x, x);
+				storage.removeItem(x);
+				return true;
+			} catch(e) {
+				return e instanceof DOMException && (
+					e.code === 22 || e.code === 1014 ||
+					e.name === 'QuotaExceededError' ||
+					e.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+				) && storage.length !== 0;
+			}
+		}
+
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
+			if (!storageAvailable('localStorage')) { return; }
+
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
 			//showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
@@ -180,17 +199,21 @@
 
 			function saveData() {
 				// save timer data to localStorage
-				var obj = {
-					'isRunning': isRunning,
-					'endTime': endTime,
-					'duration': duration,
-					'timeRemaining': timeRemaining
-				};
-				localStorage.setItem('timerData', JSON.stringify(obj));
+				if (storageAvailable('localStorage')) {
+					var obj = {
+						'isRunning': isRunning,
+						'endTime': endTime,
+						'duration': duration,
+						'timeRemaining': timeRemaining
+					};
+					localStorage.setItem('timerData', JSON.stringify(obj));
+				}
 			}
 
 			function deleteData() {
-				localStorage.removeItem('timerData');
+				if (storageAvailable('localStorage')) {
+					localStorage.removeItem('timerData');
+				}
 			}
 
 			function setDuration(form) {
