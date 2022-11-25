@@ -83,7 +83,7 @@
 					colors.bg   = localStorage.getItem('colorBG')   || '#ff7700';
 					changeColors();
 				} else {
-					changeColors();
+					clearColors();
 				}
 			}
 			// set color inputs (even if colorScheme is not currently 'custom', or even set)
@@ -105,11 +105,11 @@
 			// handle form inputs and save to localStorage
 			var name = input.name;
 			var value = input.value;
-			//console.log(name, value);
 			if (name === 'showHundredths') { value = input.checked; }
+			console.log(name, value);
+			localStorage.setItem(name, value);
 			// set colorScheme to custom on color input:
 			if ((name === 'colorBG') || (name === 'colorText')) { document.getElementById('colorSchemeCustom').click(); }
-			localStorage.setItem(name, value);
 			getOptions();
 		}
 
@@ -119,17 +119,27 @@
 			colors.s = now.getMinutes() + 40; // 40-100%
 			colors.l = (now.getSeconds() + now.getMilliseconds()/1000) + 20; // 20-80%;
 			colors.bg = 'hsl(' + colors.h + ' ' + colors.s + '% '+ colors.l + '%)';
-			colors.text = (colors.l>50) ? '#111' : '#ddd';
+			colors.text = (colors.l > 50) ? '#111' : '#ddd';
 			changeColors();
 		}
 
 		function changeColors() {
-			// change text, link, and background colors
+			// change text, link, and background colors - or clears them
 			document.body.style.backgroundColor = colors.bg;
 			document.body.style.color = colors.text;
 
 			for (var i=0; i<document.links.length; i++) {
 				document.links[i].style.color = colors.text;
+			}
+		}
+
+		function clearColors() {
+			// clear text, link, and background colors if previously set, so CSS colors are used
+			document.body.style.backgroundColor = null;
+			document.body.style.color = null;
+
+			for (var i=0; i<document.links.length; i++) {
+				document.links[i].style.color = null;
 			}
 		}
 
