@@ -155,11 +155,19 @@
 			return (n < 10) ? ('0' + n) : n;
 		}
 
+		function pad2(n) {
+			// make 2 digits
+			return (n < 10) ? ('0' + n) : n;
+		}
+
 		function update() {
 			// UTC, formatted in ISO-8601
 			now = new Date();
-			date.innerText = now.toISOString().split('T')[0];
-			time.innerText = now.toISOString().split('T')[1].split('.')[0];
+			//date.innerText = now.toISOString().split('T')[0];
+			//time.innerText = now.toISOString().split('T')[1].split('.')[0];
+			date.innerText = now.getUTCFullYear() + '-' + pad2(now.getUTCMonth()+1) + '-' + pad2(now.getUTCDate());
+			time.innerText = pad2(now.getUTCHours()) + ':' + pad2(now.getUTCMinutes()) + ':' + pad2(now.getUTCSeconds());
+
 			if (showHundredths) { time.innerHTML += '<small>.' + getHundredths( now.getUTCMilliseconds() ) + '</small>'; }
 			zone.innerHTML = 'Z<br><small>(UTC)</small>';
 

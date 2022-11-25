@@ -164,8 +164,10 @@
 			// local time in ISO-8601
 			now  = new Date();
 			// toTimeString is always hh:mm:ss GMT±xxxx (TZ), but there's no quick way to get local date in ISO-8601 format, so
-			date.innerText = now.getFullYear() + '-' + pad2(now.getMonth()) + '-' + pad2(now.getDate());
+			date.innerText = now.getFullYear() + '-' + pad2(now.getMonth()+1) + '-' + pad2(now.getDate());
+			//time.innerText = pad2(now.getHours()) + ':' + pad2(now.getMinutes()) + ':' + pad2(now.getSeconds());
 			time.innerText = now.toTimeString().substring(0, 8);
+
 			if (showHundredths) { time.innerHTML += '<small>.' + getHundredths(now.getMilliseconds()) + '</small>'; }
 			zone.innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
 				'<br><small>' + now.toTimeString().substring(18) + '</small>';
