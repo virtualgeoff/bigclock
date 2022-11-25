@@ -28,6 +28,7 @@
 
 		/* layout */
 		main {max-width:35em; margin:0 auto; padding:1em;}
+		#note {display:none; margin-left:0; font-weight:bold;}
 
 		/* nav */
 		nav {position:fixed; left:0; top:0; width:100%; margin:0; z-index:99;}
@@ -62,9 +63,32 @@
 
 		var colors = {};
 
+		function storageAvailable(type) {
+			// see https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+			try {
+				var storage = window[type],
+					x = '__storage_test__';
+				storage.setItem(x, x);
+				storage.removeItem(x);
+				return true;
+			} catch(e) {
+				return e instanceof DOMException && (
+					e.code === 22 || e.code === 1014 ||
+					e.name === 'QuotaExceededError' ||
+					e.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+				) && storage.length !== 0;
+			}
+		}
+
 		function getOptions() {
 			// load options from localStorage on page load, and set colors, font, ...
 			// also for this page, need to set form inputs on load
+			if (!storageAvailable('localStorage')) {
+				document.getElementById('note').innerText = 'LocalStorage not available: settings can not be saved.';
+				document.getElementById('note').style.display = 'block';
+				return;
+			}
+
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
 			var showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
@@ -107,7 +131,8 @@
 			var value = input.value;
 			if (name === 'showHundredths') { value = input.checked; }
 			console.log(name, value);
-			localStorage.setItem(name, value);
+			if (storageAvailable('localStorage')) { localStorage.setItem(name, value); }
+
 			// set colorScheme to custom on color input:
 			if ((name === 'colorBG') || (name === 'colorText')) { document.getElementById('colorSchemeCustom').click(); }
 			getOptions();
@@ -202,6 +227,8 @@
 
 	<main>
 		<h1>Settings</h1>
+
+		<p id="note">Settings are stored in browser localStorage.</p>
 
 		<form>
 			<h2>Color scheme</h2>
