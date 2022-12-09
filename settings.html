@@ -11,23 +11,22 @@
 	<link rel="icon" href="data:,">
 	<style>
 
-		html, body {margin:0; padding:0;}
-		body {min-height:100vh; font-size:1em; font-family:'Courier', monospace;}
-		nav, main, div {box-sizing:border-box;}
+		html, body {min-height:100%; margin:0; padding:0;}
+		body {font-size:1em; font-family:'Courier', monospace;}
 
 		h1 {margin-top:1em;}
 		h2 {margin:2em 0 0.5em 0; font-size:1.2em;}
-		p {margin:1em 0 1em 3rem; line-height:1.4;}
+		p {margin:1em 0 1em 3em; line-height:1.4;}
 		small {font-size:0.75em;}
 		label {white-space:nowrap;}
-	 	.note {margin-top:-0.5em; font-size:0.75em;}
-	 	ul.note {margin:-1em 0 1em 2rem;}
+	 	.note {margin:-0.5em 0 1em 4.2em; font-size:0.75em;}
+	 	ul.note {margin-top:-0.7em;}
 
 		a {text-decoration:none; opacity:60%}
 		a:hover {text-decoration:underline; opacity:100%}
 
 		/* layout */
-		main {max-width:35em; margin:0 auto; padding:1em;}
+		main {max-width:33em; margin:0 auto; padding:1em;}
 		#note {display:none; margin-left:0; font-weight:bold;}
 
 		/* nav */
@@ -50,7 +49,7 @@
 		body.Dark a {color:#ddd;}
 		body.Dark a:visited {color:#ddd;}
 
-		@media (prefers-color-scheme: dark) {
+		@media all and (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
 			a {color:#eee;}
 			a:visited {color:#eee;}

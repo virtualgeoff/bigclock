@@ -11,8 +11,8 @@
 	<link rel="icon" href="data:,">
 	<style>
 
-		html, body {margin:0; padding:0;}
-		body {min-height:100vh; font-size:1em; font-family:'Courier', monospace;}
+		html, body {min-height:100%; margin:0; padding:0;}
+		body {font-size:1em; font-family:'Courier', monospace;}
 		nav, main, div {box-sizing:border-box;}
 
 		h1 {}
@@ -51,7 +51,7 @@
 		body.Dark a {color:#ddd;}
 		body.Dark a:visited {color:#ddd;}
 
-		@media (prefers-color-scheme: dark) {
+		@media all and (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
 			a {color:#eee;}
 			a:visited {color:#eee;}

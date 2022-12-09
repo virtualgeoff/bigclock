@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Test</title>
+	<!-- meta name="viewport" content="width=device-width, initial-scale=1.0" -->
+	<!-- meta name="viewport" content="width=960" -->
+	<style>
+
+		html, body {min-height:100%; margin:0; padding:0;}
+		body {font-size:1em; font-family:'Courier', monospace;}
+
+		small {font-size:0.75em;}
+
+		/* layout */
+		main {}
+		main h1, main p {text-align:center; line-height:0.75; border:0px dotted red;}
+
+		#date {margin:2em auto 0 auto; font-size:4em; font-weight:200; opacity:0.3;}
+		#time {margin:1em auto 0 auto; font-size:8em; font-weight:400; padding:0 0.3em;}
+		#zone {margin:2em auto 0 auto; font-size:4em; font-weight:200; opacity:0.3;}
+
+	</style>
+	<script>
+
+		/* jshint esversion: 5 */
+
+		var date, time, zone;
+
+		function resize() {
+			// size and postion the text
+			// could use vw units and display:flex, but want to stick to CSS 2.1
+			var w = window.innerWidth,
+				h = window.innerHeight,
+				vw = w/100,
+				fs = 19,	// font size
+				lh = 0.75,	// line height
+				mh;			// margin height
+
+			// set font size and reduce if too wide
+			time.style.fontSize = fs * vw + 'px'; // = 19vw
+			while ((time.scrollWidth > w) && (fs > 5)) {
+				fs--;
+				time.style.fontSize = fs * vw + 'px';
+				console.log('reducing font size to: ' + (fs * vw) + 'px');
+			}
+			date.style.fontSize = 5 * vw + 'px';
+			zone.style.fontSize = 5 * vw + 'px';
+
+			// calculate margins to space evenly
+			mh = (h - ((fs + 15) * lh * vw)) / 4; // 15 = 3 lines * 5vw
+			time.style.marginTop = mh + 'px';
+			date.style.marginTop = mh + 'px';
+			zone.style.marginTop = mh + 'px';
+		}
+
+		function init() {
+			date = document.getElementById('date');
+			time = document.getElementById('time');
+			zone = document.getElementById('zone');
+			resize();
+		}
+
+		if (window.addEventListener) {
+			window.addEventListener('DOMContentLoaded', init);
+			window.addEventListener('resize', resize); // TODO: need to throttle this !!!
+		} else {
+			window.onload = init; // IE 6-8
+			window.onresize = resize;
+		}
+
+	</script>
+</head>
+<body>
+
+	<main>
+		<p id="date">2022-11-27</p>
+		<h1 id="time">00:00:00<small>.00</small></h1>
+		<p id="zone">+00:00<br><small>(Layout and Font Size Test)</small></p>
+	</main>
+
+</body>
+</html>
