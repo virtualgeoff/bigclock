@@ -106,7 +106,7 @@
 			var timerData  = localStorage.getItem('timerData');
 
 			if (colorScheme) {
-				document.body.classList.add(colorScheme);
+				document.body.className = colorScheme;
 				if (colorScheme === 'Dynamic') {
 					colors.dynamic = true;
 				} else if (colorScheme === 'Custom') {
@@ -273,9 +273,9 @@
 				// reset timer
 				timeRemaining = duration;
 				endTime = (isRunning) ? (Date.now() + timeRemaining) : null;
-				document.getElementById('start').classList.remove('hide');
-				saveData();
+				document.getElementById('start').style.display = 'inline';
 				update();
+				saveData();
 			}
 
 			function pad2(n) {
@@ -327,7 +327,8 @@
 				if (timeRemaining <= 0) {
 					timeRemaining = 0;
 					isRunning = false;
-					document.getElementById('start').classList.add('hide');
+					document.getElementById('start').innerText = 'Start';
+					document.getElementById('start').style.display = 'none';
 					setTimeout(function(){window.alert('Times up!');}, 20);
 				}
 

@@ -92,7 +92,7 @@
 			showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
 
 			if (colorScheme) {
-				document.body.classList.add(colorScheme);
+				document.body.className = colorScheme;
 				if (colorScheme === 'Dynamic') {
 					colors.dynamic = true;
 				} else if (colorScheme === 'Custom') {

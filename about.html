@@ -92,7 +92,7 @@
 			var fontFamily  = localStorage.getItem('fontFamily');
 
 			if (colorScheme) {
-				document.body.classList.add(colorScheme);
+				document.body.className = colorScheme;
 				if (colorScheme === 'Dynamic') {
 					setDynamicColors(new Date());
 				} else if (colorScheme === 'Custom') {

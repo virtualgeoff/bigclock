@@ -94,8 +94,8 @@
 			var radio = null, option = null, checkbox = null;
 
 			if (colorScheme) {
-				document.body.classList.remove('Auto', 'Light', 'Dark', 'Dynamic', 'Custom');
-				document.body.classList.add(colorScheme);
+				document.body.className = '';
+				document.body.className = colorScheme;
 				radio = document.getElementById('colorScheme'+colorScheme);
 				if (radio) { radio.checked = true; } // set radio button
 
