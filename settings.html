@@ -68,6 +68,26 @@
 			return false;
 		}
 
+		function fullscreen(e) {
+			// toggle fullscreen mode
+			var d = document, dE = d.documentElement;
+
+			if (d.fullscreenElement || d.webkitFullscreenElement) {
+				if (d.exitFullscreen) {
+					d.exitFullscreen();
+				} else if (d.webkitCancelFullScreen) {
+					d.webkitCancelFullScreen();
+				}
+			} else {
+				if (dE.requestFullscreen) {
+					dE.requestFullscreen();
+				} else if (dE.webkitRequestFullScreen) {
+					dE.webkitRequestFullScreen();
+				}
+			}
+			return false;
+		}
+
 		function storageAvailable(type) {
 			// see https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 			try {
@@ -173,24 +193,6 @@
 			}
 		}
 
-		function fullscreen(e) {
-			// toggle fullscreen mode
-			//e.preventDefault();
-			var d = document, dE = d.documentElement;
-
-			if (d.fullscreenElement || d.webkitFullscreenElement) {
-				if (d.exitFullscreen) {
-					d.exitFullscreen();
-				} else if (d.webkitCancelFullScreen) {
-					d.webkitCancelFullScreen();
-				}
-			} else {
-				if (dE.requestFullscreen) {
-					dE.requestFullscreen();
-				} else if (dE.webkitRequestFullScreen) {
-					dE.webkitRequestFullScreen();
-				}
-			}
 		}
 
 		window.addEventListener('DOMContentLoaded', getOptions);
