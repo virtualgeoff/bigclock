@@ -13,7 +13,6 @@
 
 		html, body {min-height:100%; margin:0; padding:0;}
 		body {font-size:1em; font-family:'Courier', monospace;}
-		nav, main, div {box-sizing:border-box;}
 
 		h1 {}
 		p {}
@@ -22,15 +21,6 @@
 		a {text-decoration:none; opacity:60%}
 		a:hover {text-decoration:underline; opacity:100%}
 
-		/* layout */
-		main {width:100vw; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly;}
-		main h1, main p {margin:0; padding:0; text-align:center; line-height:0.9;}
-
-		#date {margin:1em 0; font-size:5vw; font-weight:200;}
-		#time {margin:0 0;  font-size:19vw; font-weight:400;}
-		#zone {margin:1em 0; font-size:5vw; font-weight:200;}
-		#date, #zone {opacity:0.3;}
-
 		/* nav */
 		nav {position:fixed; left:0; top:0; height:2em; margin:0.6em; z-index:99; overflow:hidden;}
 		nav:hover {overflow:visible;}
@@ -38,6 +28,13 @@
 		nav li {margin:0; padding:0;}
 		nav li a {display:block; margin:0; padding:0.3em;}
 		nav > a {font-size:1.5em;}
+
+		/* main layout */
+		main {}
+		main h1, main p {text-align:center; font-weight:normal; line-height:0.75;}
+		#date {margin:2em 0 0 0; font-size:4em; opacity:0.3;}
+		#time {margin:1em 0 0 0; font-size:10em;}
+		#zone {margin:2em 0 0 0; font-size:4em; opacity:0.3; line-height:0.9;}
 
 		/* colors */
 		body {color:#111; background:#fff;}
@@ -131,9 +128,6 @@
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
 			}
-			if (showHundredths) {
-				document.getElementById('time').style.fontSize = '15vw';
-			}
 		}
 
 		function setDynamicColors(now) {
@@ -156,13 +150,37 @@
 			}
 		}
 
+		function resize() {
+			// size and postion the text
+			// could use vw units and display:flex, but want to stick to CSS 2.1
+			var w = window.innerWidth,
+				h = window.innerHeight,
+				vw = w/100,
+				fs = 19,	// font size
+				lh = 0.75,	// line height
+				mh;			// margin height
+
+			// set font size and reduce if too wide
+			time.style.fontSize = fs * vw + 'px'; // = 19vw
+			while ((time.scrollWidth > time.clientWidth) && (fs > 5)) {
+				fs--;
+				time.style.fontSize = fs * vw + 'px';
+				//console.log('font size = ' + (fs * vw) + 'px');
 			}
+			date.style.fontSize = 5 * vw + 'px';
+			zone.style.fontSize = 5 * vw + 'px';
+
+			// calculate margins to space evenly
+			mh = (h - ((fs + 15) * lh * vw)) / 4; // 15 = 3 lines * 5vw
+			time.style.marginTop = mh + 'px';
+			date.style.marginTop = mh + 'px';
+			zone.style.marginTop = mh + 'px';
 		}
 
 		function getHundredths(millis) {
 			// milliseconds -> hundredths of a second, left padded
 			var n = Math.floor(parseInt(millis)/10); // if millis > 995, Math.round will round up to 100, causing three digits
-			return (n < 10) ? ('0' + n) : n;
+			return pad2(n);
 		}
 
 		function pad2(n) {
@@ -175,10 +193,8 @@
 			now  = new Date();
 			// toTimeString is always hh:mm:ss GMT±xxxx (TZ), but there's no quick way to get local date in ISO-8601 format, so
 			date.innerText = now.getFullYear() + '-' + pad2(now.getMonth()+1) + '-' + pad2(now.getDate());
-			//time.innerText = pad2(now.getHours()) + ':' + pad2(now.getMinutes()) + ':' + pad2(now.getSeconds());
-			time.innerText = now.toTimeString().substring(0, 8);
-
-			if (showHundredths) { time.innerHTML += '<small>.' + getHundredths(now.getMilliseconds()) + '</small>'; }
+			time.innerHTML = '&nbsp;' + now.toTimeString().substring(0, 8) +
+				((showHundredths) ? ('<small>.' + getHundredths(now.getMilliseconds()) + '</small>') : '') + '&nbsp;';
 			zone.innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
 				'<br><small>' + now.toTimeString().substring(18) + '</small>';
 
@@ -201,9 +217,16 @@
 			zone = document.getElementById('zone');
 			getOptions();
 			update();
+			resize();
 		}
 
-		window.addEventListener('DOMContentLoaded', init);
+		if (window.addEventListener) {
+			window.addEventListener('DOMContentLoaded', init);
+			window.addEventListener('resize', resize);
+		} else {
+			window.onload = init;
+			window.onresize = resize;
+		}
 
 	</script>
 </head>

@@ -31,9 +31,6 @@
 
 		#more {margin-top:3em; font-size:0.8em; text-align:center;}
 
-		/* layout */
-		main  {max-width:40em; margin:0 auto; padding:1em;}
-
 		/* nav */
 		nav {position:fixed; left:0; top:0; height:2em; margin:0.6em; z-index:99; overflow:hidden;}
 		nav:hover {overflow:visible;}
@@ -42,6 +39,8 @@
 		nav li a {display:block; margin:0; padding:0.3em;}
 		nav > a {font-size:1.5em;}
 
+		/* main layout */
+		main  {max-width:40em; margin:0 auto; padding:1em;}
 
 		/* colors */
 		body {color:#111; background:#fff;}
@@ -168,7 +167,11 @@
 			anchor.href = output;
 		}
 
-		window.addEventListener('DOMContentLoaded', getOptions);
+		if (window.addEventListener) {
+			window.addEventListener('DOMContentLoaded', getOptions);
+		} else {
+			window.onload = getOptions; // IE 6-8
+		}
 
 	</script>
 </head>

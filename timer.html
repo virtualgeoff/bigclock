@@ -13,14 +13,11 @@
 
 		html, body {height:100%; margin:0; padding:0;}
 		body {height:calc(100% + 31020px); font-size:1em; font-family:'Courier', monospace;}
-		nav, main, div {box-sizing:border-box;}
 
 		h1 {}
 		p {}
 		small {font-size:0.667em;}
-		.hide {display:none;}
-		button {width:5em; padding:0.5em; font-size:2.5vw; cursor:pointer;}
-		/* for button styling, see: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button */
+		button {width:5em; padding:0.5em; font-size:0.5em; cursor:pointer;}
 
 		table {border:1px solid rgba(128,128,128,0.2); border-collapse:collapse;}
 		th {padding:0.1em 1em; text-align:center; border:1px solid rgba(128,128,128,0.2);}
@@ -29,18 +26,6 @@
 		a {text-decoration:none; opacity:60%}
 		a:hover {text-decoration:underline; opacity:100%}
 
-		/* layout */
-		main {position:fixed; left:0; top:0; width:100vw; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly;}
-		main h1, main p {margin:0; padding:0; text-align:center; line-height:1.0;}
-		main h1 {line-height:0.7;}
-
-		#date {margin:1em 0; font-size:5vw; font-weight:200;}
-		#time {margin:0; padding:0 0.3em; font-size:19vw; font-weight:400;}
-		#buttons {margin:1em 0 0 0; font-size:5vw;}
-		#date {opacity:0.4;}
-
-		#setTimerText {margin:0 0 1em 0; padding:6px 0; font-size:1.5em;}
-		#setTimerForm {display:none; margin:0 0 1em 0; font-size:1.5em;}
 		/* nav */
 		nav {position:fixed; left:0; top:0; height:2em; margin:0.6em; z-index:99; overflow:hidden;}
 		nav:hover {overflow:visible;}
@@ -48,6 +33,16 @@
 		nav li {margin:0; padding:0;}
 		nav li a {display:block; margin:0; padding:0.3em;}
 		nav > a {font-size:1.5em;}
+
+		/* main layout */
+		main {position:fixed; left:0; top:0; width:100%; height:100%;}
+		main h1, main p {text-align:center; font-weight:normal; line-height:0.75;}
+		#date {margin:2em 0 0 0; font-size:4em; opacity:0.3;}
+		#time {margin:1em 0 0 0; font-size:10em;}
+		#buttons {margin:2em 0 0 0; font-size:4em; line-height:0.9;}
+
+		#setTimerText {margin:1.9em 0 0 0; font-size:1.5em;}
+		#setTimerForm {display:none; margin:1.5em 0 0 0; font-size:1.5em; text-align:center;}
 		#setTimerForm input {margin-right:2px; width:2em; font-size:1.0em;} /* width for firefox */
 		#setTimerForm input[name="dd"] {width:2.5em;}
 		#setTimerForm input[type="submit"] {width:3em;}
@@ -76,6 +71,7 @@
 
 		/* jshint esversion: 5 */
 
+		var date, time, buttons;
 		var showHundredths = true; // timer always shows hundredths
 		var colors = {dynamic:false};
 
@@ -169,7 +165,31 @@
 			}
 		}
 
+		function resize() {
+			// size and postion the text
+			// could use vw units and display:flex, but want to stick to CSS 2.1
+			var w = window.innerWidth,
+				h = window.innerHeight,
+				vw = w/100,
+				fs = 19,	// font size
+				lh = 0.75,	// line height
+				mh;			// margin height
+
+			// set font size and reduce if too wide
+			time.style.fontSize = fs * vw + 'px'; // = 19vw
+			while ((time.scrollWidth > time.clientWidth) && (fs > 5)) {
+				fs--;
+				time.style.fontSize = fs * vw + 'px';
+				console.log('font size = ' + (fs * vw) + 'px');
 			}
+			date.style.fontSize = 5 * vw + 'px';
+			buttons.style.fontSize = 5 * vw + 'px';
+
+			// calculate margins to space evenly
+			mh = (h - ((fs + 15) * lh * vw)) / 4; // 15 = 3 lines * 5vw
+			time.style.marginTop = mh + 'px';
+			date.style.marginTop = mh + 'px';
+			buttons.style.marginTop = mh + 'px';
 		}
 
 		function showTimerForm() {
@@ -190,8 +210,7 @@
 				duration = 300000, // = 5 minutes
 				timeRemaining = duration;
 
-			var timeStr, years, days, hours, minutes, seconds, hundredths, milliseconds;
-			var fontSize = 19; // vh
+			var timeStr, years, days, hours, minutes, seconds, hundredths, milliseconds, textLength;
 
 			function setData(obj) {
 				// set timer data (on page load)
@@ -203,7 +222,6 @@
 				if (isRunning) { document.getElementById('start').innerText = 'Stop'; }
 				update();
 				if (colors.dynamic && !isRunning) { setDynamicColors(new Date(timeRemaining)); } // to make up not updating colors in update
-
 			}
 
 			function saveData() {
@@ -238,7 +256,6 @@
 				// set duration via page scroll
 				var n = parseInt(document.documentElement.scrollTop / 20);
 				if (n < 1) n = 1;
-				//console.log(document.documentElement.scrollTop, n);
 				var d = 1;
 
 				if (!isRunning) {
@@ -307,12 +324,13 @@
 				//years   = Math.floor(days/365);
 
 				//timeStr = pad3(years) + ':' + pad3(days % 365) + ':' + pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
-				timeStr = '';
+				timeStr = '&nbsp;';
 				//if (years > 0) timeStr += pad3(years) + ':';
 				//if (days  > 0) timeStr += pad3(days % 365) + ':';
 				if (days  > 0) timeStr += pad3(days) + ':';
 				if (hours > 0) timeStr += pad2(hours % 24) + ':';
-				timeStr += pad2(minutes % 60) + ':' + pad2(seconds % 60) + '<small>.' + pad2(hundredths) + '</small>';
+				if (minutes > 0) timeStr += pad2(minutes % 60) + ':';
+				timeStr += pad2(seconds % 60) + '<small>.' + pad2(hundredths) + '</small>&nbsp;';
 				return timeStr;
 			}
 
@@ -340,9 +358,13 @@
 					document.getElementById('start').style.display = 'none';
 					setTimeout(function(){window.alert('Times up!');}, 20);
 				}
+				time.innerHTML = formatTime(timeRemaining);
 
-				document.getElementById('time').innerHTML = formatTime(timeRemaining);
-				checkFontSize();
+				// resize text if length changes
+				if (time.innerText.length !== textLength) {
+					textLength = time.innerText.length;
+					resize();
+				}
 
 				if (colors.dynamic && isRunning) { setDynamicColors(new Date(timeRemaining)); } // && isRunning prevents colors flashing when setting duration
 
@@ -364,8 +386,23 @@
 			};
 		})();
 
-		window.addEventListener('DOMContentLoaded', getOptions);
-		window.addEventListener('scroll', Timer.setDurationScroll);
+		function init() {
+			date = document.getElementById('date');
+			time = document.getElementById('time');
+			buttons = document.getElementById('buttons');
+			getOptions();
+			resize();
+		}
+
+		if (window.addEventListener) {
+			window.addEventListener('DOMContentLoaded', init);
+			window.addEventListener('resize', resize);
+			window.addEventListener('scroll', Timer.setDurationScroll);
+		} else {
+			window.onload = init;
+			window.onresize = resize;
+			window.onscroll = Timer.setDurationScroll;
+		}
 
 	</script>
 </head>
@@ -394,9 +431,9 @@
 		</p>
 		<p id="setTimerText">Scroll page to set timer... or set <a href="#setTimerForm" onclick="return showTimerForm()">manually</a>.</p>
 		<form id="setTimerForm" onsubmit="Timer.setDuration(this); return hideTimerForm();">
-			<input type="number" name="dd" min="0" max="999" value="0">d:<!--
-			--><input type="number" name="hh" min="0" max="23" value="0">h:<!--
-			--><input type="number" name="mm" min="0" max="59" value="5">m:<!--
+			<input type="number" name="dd" min="0" max="999" value="0">d : <!--
+			--><input type="number" name="hh" min="0" max="23" value="0">h : <!--
+			--><input type="number" name="mm" min="0" max="59" value="5">m : <!--
 			--><input type="number" name="ss" min="0" max="59" value="0">s
 			<input type="submit" value="Set">
 		</form>

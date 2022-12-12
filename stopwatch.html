@@ -13,14 +13,11 @@
 
 		html, body {min-height:100%; margin:0; padding:0;}
 		body {font-size:1em; font-family:'Courier', monospace;}
-		nav, main, div {box-sizing:border-box;}
 
 		h1 {}
 		p {}
 		small {font-size:0.667em;}
-		.hide {display:none;}
-		button {width:5em; padding:0.5em; font-size:2.5vw; cursor:pointer;}
-		/* for button styling, see: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button */
+		button {width:5em; padding:0.5em; font-size:0.5em; cursor:pointer;}
 		#lap {display:none;}
 
 		table {margin:0 auto; border:1px solid rgba(128,128,128,0.2); border-collapse:collapse;}
@@ -30,17 +27,6 @@
 		a {text-decoration:none; opacity:60%}
 		a:hover {text-decoration:underline; opacity:100%}
 
-		/* layout */
-		main {width:100vw; height:80vh; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly;}
-		main h1, main p {margin:0; padding:0; text-align:center; line-height:1.0;}
-		main h1 {line-height:0.7;}
-
-		#date {margin:1em 0; font-size:5vw; font-weight:200;}
-		#time {margin:0; padding:0 0.3em; font-size:19vw; font-weight:400;}
-		#buttons {margin:1em 0; font-size:5vw;}
-		#date {opacity:0.3;}
-		#lapTimes {margin:1em auto; text-align:center;}
-
 		/* nav */
 		nav {position:fixed; left:0; top:0; height:2em; margin:0.6em; z-index:99; overflow:hidden;}
 		nav:hover {overflow:visible;}
@@ -48,6 +34,14 @@
 		nav li {margin:0; padding:0;}
 		nav li a {display:block; margin:0; padding:0.3em;}
 		nav > a {font-size:1.5em;}
+
+		/* main layout */
+		main {}
+		main h1, main p {text-align:center; font-weight:normal; line-height:0.75;}
+		#date {margin:2em 0 0 0; font-size:4em; opacity:0.3;}
+		#time {margin:1em 0 0 0; font-size:10em;}
+		#buttons {margin:2em 0 0 0; font-size:4em; line-height:0.9;}
+		#lapTimes {margin:2em 0; text-align:center;}
 
 		/* colors */
 		body {color:#111; background:#fff;}
@@ -73,8 +67,11 @@
 
 		/* jshint esversion: 5 */
 
+		var date, time, buttons;
 		var showHundredths = true; // stopwatch always shows hundredths
 		var colors = {dynamic:false};
+		var waiting = false;
+
 		function toggleNav(e) {
 			var nav = document.getElementsByTagName('nav')[0];
 			nav.style.overflow = (nav.style.overflow === 'visible') ? '' : 'visible';
@@ -165,8 +162,41 @@
 			}
 		}
 
+		function resize() {
+			// size and postion the text
+			// could use vw units and display:flex, but want to stick to CSS 2.1
+			var w = window.innerWidth,
+				h = window.innerHeight,
+				vw = w/100,
+				fs = 19,	// font size
+				lh = 0.75,	// line height
+				mh;			// margin height
 
+			// set font size and reduce if too wide
+			time.style.fontSize = fs * vw + 'px'; // = 19vw
+			while ((time.scrollWidth > time.clientWidth) && (fs > 5)) {
+				fs--;
+				time.style.fontSize = fs * vw + 'px';
+				console.log('font size = ' + (fs * vw) + 'px');
+			}
+			date.style.fontSize = 5 * vw + 'px';
+			buttons.style.fontSize = 5 * vw + 'px';
+
+			// calculate margins to space evenly
+			mh = (h - ((fs + 15) * lh * vw)) / 4; // 15 = 3 lines * 5vw
+			time.style.marginTop = mh + 'px';
+			date.style.marginTop = mh + 'px';
+			buttons.style.marginTop = mh + 'px';
+		}
+
+		function throttledResize() {
+			if (!waiting) {
+				console.log('resize!');
+				resize();
+				waiting = true;
+				setTimeout(function() { waiting = false; }, 20);
 			} else {
+				console.log('waiting...');
 			}
 		}
 
@@ -179,8 +209,7 @@
 				lapTimes = [0],
 				timerID = null;
 
-			var timeStr, years, days, hours, minutes, seconds, hundredths, milliseconds;
-			var fontSize = 19; // vh
+			var timeStr, years, days, hours, minutes, seconds, hundredths, milliseconds, textLength;
 
 			function setData(obj) {
 				// set stopwatch data (on page load)
@@ -294,7 +323,6 @@
 					document.getElementById('lapTimesTBody').innerHTML += '<tr><td>' + i + '</td><td>' +
 						formatTime(lapTimes[i]) + '</td><td>' + formatTime(lapTimes[i] - lapTimes[i-1]) + '</td></tr>';
 				}
-				//console.log(lapTimes);
 			}
 
 			function formatTime(time) {
@@ -308,27 +336,24 @@
 				years   = Math.floor(days/365);
 
 				//timeStr = pad3(years) + ':' + pad3(days % 365) + ':' + pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
-				timeStr = '';
+				timeStr = '&nbsp;';
 				if (years > 0) timeStr += pad3(years) + ':';
 				if (days  > 0) timeStr += pad3(days % 365) + ':';
 				if (hours > 0) timeStr += pad2(hours % 24) + ':';
-				timeStr += pad2(minutes % 60) + ':' + pad2(seconds % 60) + '<small>.' + pad2(hundredths) + '</small>';
+				if (minutes > 0) timeStr += pad2(minutes % 60) + ':';
+				timeStr += pad2(seconds % 60) + '<small>.' + pad2(hundredths) + '</small>&nbsp;';
 				return timeStr;
-			}
-
-			function checkFontSize() {
-				// check the width of the time element and reduce the font-size until it fits the window
-				while (document.getElementById('time').clientWidth > window.innerWidth) {
-					fontSize -= 0.5;
-					document.getElementById('time').style.fontSize = fontSize + 'vw';
-					//console.log('font-size reduced to ' + fontSize + 'vw');
-				}
 			}
 
 			function update() {
 				elapsedTime = ((isRunning ? Date.now() : stopTime) - startTime); // in milliseconds
-				document.getElementById('time').innerHTML = formatTime(elapsedTime);
-				checkFontSize();
+				time.innerHTML = formatTime(elapsedTime);
+
+				// resize text if length changes
+				if (time.innerText.length !== textLength) {
+					textLength = time.innerText.length;
+					resize();
+				}
 
 				// write current lap
 				document.getElementById('CL2').innerHTML = formatTime(elapsedTime);
@@ -353,7 +378,21 @@
 			};
 		})();
 
-		window.addEventListener('DOMContentLoaded', getOptions);
+		function init() {
+			date = document.getElementById('date');
+			time = document.getElementById('time');
+			buttons = document.getElementById('buttons');
+			getOptions();
+			resize();
+		}
+
+		if (window.addEventListener) {
+			window.addEventListener('DOMContentLoaded', init);
+			window.addEventListener('resize', resize);
+		} else {
+			window.onload = init;
+			window.onresize = resize;
+		}
 
 	</script>
 </head>
