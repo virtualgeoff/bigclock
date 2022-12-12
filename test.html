@@ -16,9 +16,9 @@
 		a:hover {text-decoration:underline; opacity:100%}
 
 		/* nav */
-		nav {position:fixed; left:0; top:0; height:2em; margin:0.6em; z-index:99; overflow:hidden;}
+		nav {position:fixed; left:0; top:0; width:2em; height:2em; margin:0.6em; z-index:99; overflow:hidden;}
 		nav:hover {overflow:visible;}
-		nav ul {width:8em; margin:0; padding:0.3em 0 0 0; list-style:none;}
+		nav ul {width:14em; margin:0; padding:0.3em 0; list-style:none; border:1px solid #000;}
 		nav li {margin:0; padding:0;}
 		nav li a {display:block; margin:0; padding:0.3em;}
 		nav > a {font-size:1.5em;}
@@ -34,19 +34,23 @@
 		body {color:#111; background:#fff;}
 		a {color:#111;}
 		a:visited {color:#111;}
+		nav ul {background:#fff; border-color:#111;}
 
 		body.Light {color:#111; background:#fff;}
 		body.Light a {color:#111;}
 		body.Light a:visited {color:#111;}
+		body.Light nav ul {background:#fff; border-color:#111;}
 
-		body.Dark {color:#ddd; background:#000;}
+		body.Dark {color:#eee; background:#000;}
 		body.Dark a {color:#ddd;}
 		body.Dark a:visited {color:#ddd;}
+		body.Dark nav ul {background:#000; border-color:#ddd;}
 
 		@media all and (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
-			a {color:#eee;}
-			a:visited {color:#eee;}
+			a {color:#ddd;}
+			a:visited {color:#ddd;}
+			nav ul {background:#000; border-color:#ddd;}
 		}
 
 	</style>
@@ -139,6 +143,8 @@
 			// change text, link, and background colors
 			document.body.style.backgroundColor = colors.bg;
 			document.body.style.color = colors.text;
+			document.getElementById('navlist').style.backgroundColor = colors.bg;
+			document.getElementById('navlist').style.borderColor = colors.text;
 
 			for (var i=0; i<document.links.length; i++) {
 				document.links[i].style.color = colors.text;
@@ -160,7 +166,7 @@
 			while ((time.scrollWidth > time.clientWidth) && (fs > 5)) {
 				fs--;
 				time.style.fontSize = fs * vw + 'px';
-				console.log('font size = ' + (fs * vw) + 'px');
+				//console.log('font size = ' + (fs * vw) + 'px');
 			}
 			date.style.fontSize = 5 * vw + 'px';
 			zone.style.fontSize = 5 * vw + 'px';
@@ -240,14 +246,14 @@
 
 	<nav>
 		<a href="./" onclick="return toggleNav();"><b>☰</b></a><br>
-		<ul>
-			<li><a href="./">Local time</a></li>
+		<ul id="navlist">
+			<li><a href="./">The time (ISO 8601)</a></li>
+			<li><a href="./local.html">Local time format</a></li>
 			<li><a href="./utc.html">UTC</a></li>
 			<li><a href="./stopwatch.html">Stopwatch</a></li>
 			<li><a href="./timer.html">Timer</a></li>
 			<li><a href="./about.html">About</a></li>
 			<li><a href="./settings.html">Settings</a></li>
-			<li><a href="./test.html">Test page</a></li>
 			<li><a href="#" title="Make full screen" onclick="return fullscreen();">Fullscreen</a></li>
 		</ul>
 	</nav>
