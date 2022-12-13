@@ -16,17 +16,17 @@
 
 		h1 {margin-top:1em;}
 		h2 {margin:2em 0 0.5em 0; font-size:1.2em;}
-		p {margin:1em 0 1em 3em; line-height:1.4;}
+		p {margin:1em 0 1em 2em; line-height:1.4;}
 		small {font-size:0.75em;}
 		label {white-space:nowrap;}
-	 	.note {margin:-0.5em 0 1em 4.2em; font-size:0.75em;}
+	 	.note {margin:-0.5em 0 1em 3.0em; font-size:0.75em;}
 	 	ul.note {margin-top:-0.7em;}
 
 		a {text-decoration:none; opacity:60%}
 		a:hover {text-decoration:underline; opacity:100%}
 
 		/* nav */
-		nav {position:fixed; left:0; top:0; width:2em; height:2em; margin:0.6em; z-index:99; overflow:hidden;}
+		nav {position:absolute; left:0; top:0; width:2em; height:1.9em; margin:0.6em; z-index:99; overflow:hidden;}
 		nav:hover {overflow:visible;}
 		nav ul {width:14em; margin:0; padding:0.3em 0; list-style:none; border:1px solid #000;}
 		nav li {margin:0; padding:0;}
@@ -237,11 +237,11 @@
 				<label><input type="radio" name="colorScheme" id="colorSchemeAuto"    value="Auto"    onchange="setOption(this)" checked> auto (system)</label><br>
 				<label><input type="radio" name="colorScheme" id="colorSchemeLight"   value="Light"   onchange="setOption(this)"> light</label><br>
 				<label><input type="radio" name="colorScheme" id="colorSchemeDark"    value="Dark"    onchange="setOption(this)"> dark</label><br>
-				<label><input type="radio" name="colorScheme" id="colorSchemeDynamic" value="Dynamic" onchange="setOption(this)"> dynamic (color changes with time)</label><br>
+				<label><input type="radio" name="colorScheme" id="colorSchemeDynamic" value="Dynamic" onchange="setOption(this)"> dynamic</label> (color changes with&nbsp;time)<br>
 				<label><input type="radio" name="colorScheme" id="colorSchemeCustom"  value="Custom"  onchange="setOption(this)"> custom:</label> &nbsp;
 
-				<label><input type="color" name="colorText" id="colorText" value="#000000" onchange="setOption(this)"> text</label> &nbsp;
-				<label><input type="color" name="colorBG"   id="colorBG"   value="#ff7700" onchange="setOption(this)"> background</label>
+				<label>text:<input type="color" name="colorText" id="colorText" value="#000000" onchange="setOption(this)"></label> &nbsp;
+				<label>bg:<input type="color" name="colorBG"   id="colorBG"   value="#ff7700" onchange="setOption(this)"></label>
 			</p>
 
 			<h2>Font</h2>
@@ -299,9 +299,10 @@
 		</form>
 	</main>
 
-	<!-- simple analytics -->
+	<!-- simple analytics
 	<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 	<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade"></noscript>
+	-->
 
 </body>
 </html>
