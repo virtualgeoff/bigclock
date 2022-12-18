@@ -22,16 +22,16 @@
 		a:hover {text-decoration:underline; opacity:100%}
 
 		/* nav */
-		nav {position:fixed; left:0; top:0; margin:0.6em; z-index:99;}
-		nav ul {display:none; width:14em; margin:0; padding:0.3em 0; list-style:none; border:1px solid #000;}
-		nav:hover ul {display:block;}
-		nav li {margin:0; padding:0;}
-		nav li a {display:block; margin:0; padding:0.3em;}
-		nav > a {font-size:1.5em;}
+		#nav {position:fixed; left:0; top:0; margin:0.6em; z-index:99;}
+		#nav ul {display:none; width:14em; margin:0; padding:0.3em 0; list-style:none; border:1px solid #000;}
+		#nav:hover ul {display:block;}
+		#nav li {margin:0; padding:0;}
+		#nav li a {display:block; margin:0; padding:0.3em;}
+		#nav > a {font-size:1.5em;}
 
 		/* main layout */
-		main {}
-		main h1, main p {text-align:center; font-weight:normal; line-height:0.75;}
+		#main {}
+		#main h1, #main p {text-align:center; font-weight:normal; line-height:0.75;}
 		#date {margin:2em 0 0 0; font-size:4em; opacity:0.3;}
 		#time {margin:1em 0 0 0; font-size:10em;}
 		#zone {margin:2em 0 0 0; font-size:4em; opacity:0.3; line-height:0.9;}
@@ -40,23 +40,23 @@
 		body {color:#111; background:#fff;}
 		a {color:#111;}
 		a:visited {color:#111;}
-		nav ul {background:#fff; border-color:#111;}
+		#nav ul {background:#fff; border-color:#111;}
 
 		body.Light {color:#111; background:#fff;}
 		body.Light a {color:#111;}
 		body.Light a:visited {color:#111;}
-		body.Light nav ul {background:#fff; border-color:#111;}
+		body.Light #nav ul {background:#fff; border-color:#111;}
 
 		body.Dark {color:#eee; background:#000;}
 		body.Dark a {color:#ddd;}
 		body.Dark a:visited {color:#ddd;}
-		body.Dark nav ul {background:#000; border-color:#ddd;}
+		body.Dark #nav ul {background:#000; border-color:#ddd;}
 
 		@media all and (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
 			a {color:#ddd;}
 			a:visited {color:#ddd;}
-			nav ul {background:#000; border-color:#ddd;}
+			#nav ul {background:#000; border-color:#ddd;}
 		}
 
 	</style>
@@ -237,7 +237,7 @@
 </head>
 <body>
 
-	<nav>
+	<div id="nav">
 		<a href="./" onclick="return toggleNav();"><b>☰</b></a><br>
 		<ul id="navlist">
 			<li><a href="./">The time (ISO 8601)</a></li>
@@ -249,13 +249,13 @@
 			<li><a href="./settings.html">Settings</a></li>
 			<li><a href="#" title="Make full screen" onclick="return fullscreen();">Fullscreen</a></li>
 		</ul>
-	</nav>
+	</div>
 
-	<main>
+	<div id="main">
 		<p id="date"><small>A clock, but BIG. The current<br>time, in UTC, in ISO 8601</small></p>
 		<h1 id="time">00:00:00</h1>
 		<p id="zone"><small>This page requires Javascript!</small></p>
-	</main>
+	</div>
 
 	<!-- simple analytics -->
 	<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>

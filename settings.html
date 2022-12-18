@@ -26,38 +26,38 @@
 		a:hover {text-decoration:underline; opacity:100%}
 
 		/* nav */
-		nav {position:absolute; left:0; top:0; margin:0.6em; z-index:99;}
-		nav ul {display:none; width:14em; margin:0; padding:0.3em 0; list-style:none; border:1px solid #000;}
-		nav:hover ul {display:block;}
-		nav li {margin:0; padding:0;}
-		nav li a {display:block; margin:0; padding:0.3em;}
-		nav > a {font-size:1.5em;}
+		#nav {position:absolute; left:0; top:0; margin:0.6em; z-index:99;}
+		#nav ul {display:none; width:14em; margin:0; padding:0.3em 0; list-style:none; border:1px solid #000;}
+		#nav:hover ul {display:block;}
+		#nav li {margin:0; padding:0;}
+		#nav li a {display:block; margin:0; padding:0.3em;}
+		#nav > a {font-size:1.5em;}
 
 		/* main layout */
-		main {max-width:33em; margin:0 auto; padding:1em;}
+		#main {max-width:33em; margin:0 auto; padding:1em;}
 		#note {display:none; margin-left:0; font-weight:bold;}
 
 		/* colors */
 		body {color:#111; background:#fff;}
 		a {color:#111;}
 		a:visited {color:#111;}
-		nav ul {background:#fff; border-color:#111;}
+		#nav ul {background:#fff; border-color:#111;}
 
 		body.Light {color:#111; background:#fff;}
 		body.Light a {color:#111;}
 		body.Light a:visited {color:#111;}
-		body.Light nav ul {background:#fff; border-color:#111;}
+		body.Light #nav ul {background:#fff; border-color:#111;}
 
 		body.Dark {color:#eee; background:#000;}
 		body.Dark a {color:#ddd;}
 		body.Dark a:visited {color:#ddd;}
-		body.Dark nav ul {background:#000; border-color:#ddd;}
+		body.Dark #nav ul {background:#000; border-color:#ddd;}
 
 		@media all and (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
 			a {color:#ddd;}
 			a:visited {color:#ddd;}
-			nav ul {background:#000; border-color:#ddd;}
+			#nav ul {background:#000; border-color:#ddd;}
 		}
 
 	</style>
@@ -212,7 +212,7 @@
 </head>
 <body>
 
-	<nav>
+	<div id="nav">
 		<a href="./" onclick="return toggleNav();"><b>☰</b></a><br>
 		<ul id="navlist">
 			<li><a href="./">The time (ISO 8601)</a></li>
@@ -224,9 +224,9 @@
 			<li><a href="./settings.html">Settings</a></li>
 			<li><a href="#" title="Make full screen" onclick="return fullscreen();">Fullscreen</a></li>
 		</ul>
-	</nav>
+	</div>
 
-	<main>
+	<div id="main">
 		<h1>Settings</h1>
 
 		<p id="note">Settings are stored in browser localStorage.</p>
@@ -297,7 +297,7 @@
 				<li>±33 ms (±0.03 s) at 30 fps</li>
 			</ul>
 		</form>
-	</main>
+	</div>
 
 	<!-- simple analytics
 	<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>

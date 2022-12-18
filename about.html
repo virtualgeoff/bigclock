@@ -32,37 +32,37 @@
 		#more {margin-top:3em; font-size:0.8em; text-align:center;}
 
 		/* nav */
-		nav {position:absolute; left:0; top:0; margin:0.6em; z-index:99;}
-		nav ul {display:none; width:14em; margin:0; padding:0.3em 0; list-style:none; border:1px solid #000;}
-		nav:hover ul {display:block;}
-		nav li {margin:0; padding:0;}
-		nav li a {display:block; margin:0; padding:0.3em;}
-		nav > a {font-size:1.5em;}
+		#nav {position:absolute; left:0; top:0; margin:0.6em; z-index:99;}
+		#nav ul {display:none; width:14em; margin:0; padding:0.3em 0; list-style:none; border:1px solid #000;}
+		#nav:hover ul {display:block;}
+		#nav li {margin:0; padding:0;}
+		#nav li a {display:block; margin:0; padding:0.3em;}
+		#nav > a {font-size:1.5em;}
 
 		/* main layout */
-		main  {max-width:40em; margin:0 auto; padding:1em;}
+		#main {max-width:40em; margin:0 auto; padding:1em;}
 
 		/* colors */
 		body {color:#111; background:#fff;}
 		a {color:#111;}
 		a:visited {color:#111;}
-		nav ul {background:#fff; border-color:#111;}
+		#nav ul {background:#fff; border-color:#111;}
 
 		body.Light {color:#111; background:#fff;}
 		body.Light a {color:#111;}
 		body.Light a:visited {color:#111;}
-		body.Light nav ul {background:#fff; border-color:#111;}
+		body.Light #nav ul {background:#fff; border-color:#111;}
 
 		body.Dark {color:#eee; background:#000;}
 		body.Dark a {color:#ddd;}
 		body.Dark a:visited {color:#ddd;}
-		body.Dark nav ul {background:#000; border-color:#ddd;}
+		body.Dark #nav ul {background:#000; border-color:#ddd;}
 
 		@media all and (prefers-color-scheme: dark) {
 			body {color:#eee; background:#000;}
 			a {color:#ddd;}
 			a:visited {color:#ddd;}
-			nav ul {background:#000; border-color:#ddd;}
+			#nav ul {background:#000; border-color:#ddd;}
 		}
 
 	</style>
@@ -73,8 +73,8 @@
 		var colors = {};
 
 		function toggleNav(e) {
-			var nav = document.getElementsByTagName('nav')[0];
-			nav.style.overflow = (nav.style.overflow === 'visible') ? '' : 'visible';
+			var navlist = document.getElementById('navlist');
+			navlist.style.display = (navlist.style.display === 'block') ? 'none' : 'block';
 			return false;
 		}
 
@@ -183,7 +183,7 @@
 </head>
 <body>
 
-	<nav>
+	<div id="nav">
 		<a href="./" onclick="return toggleNav();"><b>☰</b></a><br>
 		<ul id="navlist">
 			<li><a href="./">The time (ISO 8601)</a></li>
@@ -195,9 +195,9 @@
 			<li><a href="./settings.html">Settings</a></li>
 			<li><a href="#" title="Make full screen" onclick="return fullscreen();">Fullscreen</a></li>
 		</ul>
-	</nav>
+	</div>
 
-	<main>
+	<div id="main">
 		<h1>About</h1>
 		<p>A clock, but BIG. The current time, in your current time zone, in <a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a>. There's also a <a href="utc.html">UTC Clock</a>, a <a href="stopwatch.html">Stopwatch</a>, and a <a href="timer.html">Timer</a>.</p>
 
@@ -221,7 +221,7 @@
 			<a id="email" href="#" data-address="6d 61 69 6c 74 6f 3a 62 69 67 63 6c 6f 63 6b 40 76 69 72 74 75 61 6c 67 65 6f 66 66 2e 63 6f 6d">Feedback</a> &nbsp; 〜 &nbsp;
 			<a href="https://github.com/virtualgeoff/bigclock">Source</a>
 		</p>
-	</main>
+	</div>
 
 	<!-- simple analytics -->
 	<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
