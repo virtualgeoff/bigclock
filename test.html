@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Big Clock: UTC</title>
-	<meta name="description" content="A clock, but BIG. The current time, in UTC, in ISO 8601.">
-	<meta name="keywords" content="clock, big, current time, now, ISO 8601">
-	<meta name="author" content="virtualgeoff">
+	<title>Test</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
 	<link rel="icon" href="data:,">
@@ -14,10 +11,7 @@
 		html, body {min-height:100%; margin:0; padding:0;}
 		body {font-size:1em; font-family:'Courier', monospace;}
 
-		h1 {}
-		p {}
 		small {font-size:0.75em;}
-
 		a {text-decoration:none; opacity:60%}
 		a:hover {text-decoration:underline; opacity:100%}
 
@@ -66,6 +60,7 @@
 
 		var date, time, zone, now;
 		var showHundredths = false;
+		var waiting = false;
 		var colors = {dynamic:false};
 
 		function toggleNav(e) {
@@ -135,10 +130,10 @@
 		}
 
 		function setDynamicColors(now) {
-			// set colors based on the current UTC time
-			colors.h = now.getUTCHours() * 15 + now.getUTCMinutes() * 15/60; // 0-360°
-			colors.s = now.getUTCMinutes() + 40; // 40-100%
-			colors.l = (now.getUTCSeconds() + now.getUTCMilliseconds()/1000) + 20; // 20-80%;
+			// set colors based on the current local time
+			colors.h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
+			colors.s = now.getMinutes() + 40; // 40-100%
+			colors.l = (now.getSeconds() + now.getMilliseconds()/1000) + 20; // 20-80%;
 			colors.bg = 'hsl(' + colors.h + ' ' + colors.s + '% '+ colors.l + '%)';
 			colors.text = (colors.l > 50) ? '#111' : '#ddd';
 			changeColors();
@@ -183,6 +178,17 @@
 			zone.style.marginTop = mh + 'px';
 		}
 
+		function throttledResize() {
+			if (!waiting) {
+				console.log('resize!');
+				resize();
+				waiting = true;
+				setTimeout(function() { waiting = false; }, 20);
+			} else {
+				console.log('waiting...');
+			}
+		}
+
 		function getHundredths(millis) {
 			// milliseconds -> hundredths of a second, left padded
 			var n = Math.floor(parseInt(millis)/10); // if millis > 995, Math.round will round up to 100, causing three digits
@@ -195,13 +201,14 @@
 		}
 
 		function update() {
-			// UTC, formatted in ISO-8601
-			now = new Date();
-			// toISOString() not supported in some old browsers, so
-			date.innerText = now.getUTCFullYear() + '-' + pad2(now.getUTCMonth()+1) + '-' + pad2(now.getUTCDate());
-			time.innerHTML = '&nbsp;' + pad2(now.getUTCHours()) + ':' + pad2(now.getUTCMinutes()) + ':' + pad2(now.getUTCSeconds()) +
-				((showHundredths) ? ('<small>.' + getHundredths( now.getUTCMilliseconds() ) + '</small>') : '') + '&nbsp;';
-			zone.innerHTML = 'Z<br><small>(UTC)</small>';
+			// local time in ISO-8601
+			now  = new Date();
+			// toTimeString is always hh:mm:ss GMT±xxxx (TZ), but there's no quick way to get local date in ISO-8601 format, so
+			date.innerText = now.getFullYear() + '-' + pad2(now.getMonth()+1) + '-' + pad2(now.getDate());
+			time.innerHTML = '&nbsp;' + now.toTimeString().substring(0, 8) +
+				((showHundredths) ? ('<small>.' + getHundredths(now.getMilliseconds()) + '</small>') : '') + '&nbsp;';
+			zone.innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
+				'<br><small>' + now.toTimeString().substring(18) + '</small>';
 
 			if (colors.dynamic) { setDynamicColors(now); }
 
@@ -252,14 +259,10 @@
 	</nav>
 
 	<main>
-		<p id="date"><small>A clock, but BIG. The current<br>time, in UTC, in ISO 8601</small></p>
-		<h1 id="time">00:00:00</h1>
-		<p id="zone"><small>This page requires Javascript!</small></p>
+		<p id="date">2022-11-27</p>
+		<h1 id="time">00:00:00<small>.00</small></h1>
+		<p id="zone">+00:00<br><small>(Layout and Font Size Test)</small></p>
 	</main>
-
-	<!-- simple analytics -->
-	<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-	<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade"></noscript>
 
 </body>
 </html>

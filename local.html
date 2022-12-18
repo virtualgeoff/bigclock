@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Big Clock: UTC</title>
-	<meta name="description" content="A clock, but BIG. The current time, in UTC, in ISO 8601.">
-	<meta name="keywords" content="clock, big, current time, now, ISO 8601">
+	<title>Big Clock</title>
+	<meta name="description" content="A clock, but BIG. The current time in your current time zone.">
+	<meta name="keywords" content="clock, big, current time, now">
 	<meta name="author" content="virtualgeoff">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light dark">
@@ -33,7 +33,7 @@
 		main {}
 		main h1, main p {text-align:center; font-weight:normal; line-height:0.75;}
 		#date {margin:2em 0 0 0; font-size:4em; opacity:0.3;}
-		#time {margin:1em 0 0 0; font-size:10em;}
+		#time {margin:1em 0 0 0; font-size:10em; white-space:nowrap;}
 		#zone {margin:2em 0 0 0; font-size:4em; opacity:0.3; line-height:0.9;}
 
 		/* colors */
@@ -67,6 +67,7 @@
 		var date, time, zone, now;
 		var showHundredths = false;
 		var colors = {dynamic:false};
+		var isChrome = false;
 
 		function toggleNav(e) {
 			var nav = document.getElementsByTagName('nav')[0];
@@ -135,10 +136,10 @@
 		}
 
 		function setDynamicColors(now) {
-			// set colors based on the current UTC time
-			colors.h = now.getUTCHours() * 15 + now.getUTCMinutes() * 15/60; // 0-360°
-			colors.s = now.getUTCMinutes() + 40; // 40-100%
-			colors.l = (now.getUTCSeconds() + now.getUTCMilliseconds()/1000) + 20; // 20-80%;
+			// set colors based on the current local time
+			colors.h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
+			colors.s = now.getMinutes() + 40; // 40-100%
+			colors.l = (now.getSeconds() + now.getMilliseconds()/1000) + 20; // 20-80%;
 			colors.bg = 'hsl(' + colors.h + ' ' + colors.s + '% '+ colors.l + '%)';
 			colors.text = (colors.l > 50) ? '#111' : '#ddd';
 			changeColors();
@@ -195,13 +196,20 @@
 		}
 
 		function update() {
-			// UTC, formatted in ISO-8601
-			now = new Date();
-			// toISOString() not supported in some old browsers, so
-			date.innerText = now.getUTCFullYear() + '-' + pad2(now.getUTCMonth()+1) + '-' + pad2(now.getUTCDate());
-			time.innerHTML = '&nbsp;' + pad2(now.getUTCHours()) + ':' + pad2(now.getUTCMinutes()) + ':' + pad2(now.getUTCSeconds()) +
-				((showHundredths) ? ('<small>.' + getHundredths( now.getUTCMilliseconds() ) + '</small>') : '') + '&nbsp;';
-			zone.innerHTML = 'Z<br><small>(UTC)</small>';
+			// local time (12 hr)
+			now  = new Date();
+			// toTimeString is always hh:mm:ss GMT±xxxx (TZ), but there's no quick way to get local date in ISO-8601 format, so
+			date.innerText = now.toLocaleDateString();
+
+			// Chrome gets toLocaleTimeString() wrong!
+			if (isChrome && navigator.language) {
+				time.innerHTML = '&nbsp;' + now.toLocaleTimeString(navigator.language) + '&nbsp;';
+			} else {
+				time.innerHTML = '&nbsp;' + now.toLocaleTimeString() + '&nbsp;';
+			}
+
+			zone.innerHTML = now.toTimeString().substring(12, 15) + ':' + now.toTimeString().substring(15, 17) +
+				'<br><small>' + now.toTimeString().substring(18) + '</small>';
 
 			if (colors.dynamic) { setDynamicColors(now); }
 
@@ -220,6 +228,13 @@
 			date = document.getElementById('date');
 			time = document.getElementById('time');
 			zone = document.getElementById('zone');
+
+			// is the browser Chrome?
+			if ((navigator.userAgent.indexOf('Chrome') != -1) && (navigator.userAgent.indexOf('Edg') === -1)) {
+				isChrome = true;
+			}
+			if (navigator.language) { console.log('isChrome: ' + isChrome + '\nnavigator.language: ' + navigator.language); }
+
 			getOptions();
 			update();
 			resize();
@@ -252,7 +267,7 @@
 	</nav>
 
 	<main>
-		<p id="date"><small>A clock, but BIG. The current<br>time, in UTC, in ISO 8601</small></p>
+		<p id="date"><small>A clock, but BIG. The current time,<br>in your current time zone</small></p>
 		<h1 id="time">00:00:00</h1>
 		<p id="zone"><small>This page requires Javascript!</small></p>
 	</main>
