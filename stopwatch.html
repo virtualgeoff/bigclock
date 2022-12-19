@@ -328,22 +328,19 @@
 
 			function writeLapTimes() {
 				// write all the lap times
-				// TODO: find the fastest and slowest times and color them green and red respectively
-				var tbody = document.getElementById('lapTimesTBody');
-
-				// remove any rows apart from first (2nd including text nodes)
-				while (tbody.childNodes.length > 2) {
-					tbody.removeChild(tbody.lastChild);
-				}
+				// IE has problems using innerHTML to update table content, so rewrite the whole table
+				var div = document.getElementById('lapTimes');
+				var tableStr = '<table id="lapTimes"><thead><tr><th>Lap:</th><th>Elapsed time:</th><th>Lap time:</th></tr></thead>';
 
 				// number current lap
-				document.getElementById('CL1').innerText = lapTimes.length;
+				tableStr += '<tbody><tr id="currentLap"><td id="CL1">' + lapTimes.length + '</td><td id="CL2"></td><td id="CL3"></td></tr>';
 
 				// add rows for previous laps
 				for (var i=lapTimes.length-1; i>0; i--) {
-					document.getElementById('lapTimesTBody').innerHTML += '<tr><td>' + i + '</td><td>' +
-						formatTime(lapTimes[i]) + '</td><td>' + formatTime(lapTimes[i] - lapTimes[i-1]) + '</td></tr>';
+					tableStr += '<tr><td>' + i + '</td><td>' + formatTime(lapTimes[i]) + '</td><td>' + formatTime(lapTimes[i] - lapTimes[i-1]) + '</td></tr>';
 				}
+				tableStr += '</tbody></table>';
+				div.innerHTML = tableStr;
 			}
 
 			function formatTime(time) {
