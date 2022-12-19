@@ -157,8 +157,8 @@
 		function resize() {
 			// size and postion the text
 			// could use vw units and display:flex, but want to stick to CSS 2.1
-			var w = window.innerWidth,
-				h = window.innerHeight,
+			var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+				h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
 				vw = w/100,
 				fs = 19,	// font size
 				lh = 0.75,	// line height
@@ -166,10 +166,11 @@
 
 			// set font size and reduce if too wide
 			time.style.fontSize = fs * vw + 'px'; // = 19vw
-			while ((time.scrollWidth > time.clientWidth) && (fs > 5)) {
+			while ((time.scrollWidth > time.clientWidth) && (fs > 12)) {
 				fs--;
 				time.style.fontSize = fs * vw + 'px';
-				//console.log('font size = ' + (fs * vw) + 'px');
+				//console.log('window.innerWidth: ' + w + ', scrollWidth: ' + time.scrollWidth + ', clientWidth: ' + time.clientWidth + ', offsetWidth: ' + time.offsetWidth);
+				console.log('font size: ' + fs + 'vw, ' + (fs * vw) + 'px');
 			}
 			date.style.fontSize = 5 * vw + 'px';
 			zone.style.fontSize = 5 * vw + 'px';
