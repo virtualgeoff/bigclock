@@ -34,7 +34,8 @@
 		#nav > a {font-size:1.5em;}
 
 		/* main layout */
-		#main {max-width:33em; margin:0 auto; padding:1em;}
+		#main {max-width:30em; margin:0 auto; padding:1em;}
+		#custom {margin:-0.5em 0 0 6em;}
 		#note {display:none; margin-left:0; font-weight:bold;}
 
 		/* colors */
@@ -205,7 +206,7 @@
 		if (window.addEventListener) {
 			window.addEventListener('DOMContentLoaded', getOptions);
 		} else {
-			window.onload = getOptions; // IE 6-8
+			window.onload = getOptions;
 		}
 
 	</script>
@@ -238,10 +239,11 @@
 				<label><input type="radio" name="colorScheme" id="colorSchemeLight"   value="Light"   onchange="setOption(this)"> light</label><br>
 				<label><input type="radio" name="colorScheme" id="colorSchemeDark"    value="Dark"    onchange="setOption(this)"> dark</label><br>
 				<label><input type="radio" name="colorScheme" id="colorSchemeDynamic" value="Dynamic" onchange="setOption(this)"> dynamic</label> (color changes with&nbsp;time)<br>
-				<label><input type="radio" name="colorScheme" id="colorSchemeCustom"  value="Custom"  onchange="setOption(this)"> custom:</label> &nbsp;
-
-				<label>text:<input type="color" name="colorText" id="colorText" value="#000000" onchange="setOption(this)"></label> &nbsp;
-				<label>bg:<input type="color" name="colorBG"   id="colorBG"   value="#ff7700" onchange="setOption(this)"></label>
+				<label><input type="radio" name="colorScheme" id="colorSchemeCustom"  value="Custom"  onchange="setOption(this)"> custom:</label>
+			</p>
+			<p id="custom">
+				<label><input type="color" name="colorText" id="colorText" value="#000000" size="7" onchange="setOption(this)"> text</label><br>
+				<label><input type="color" name="colorBG"   id="colorBG"   value="#ff7700" size="7" onchange="setOption(this)"> background</label>
 			</p>
 
 			<h2>Font</h2>

@@ -36,16 +36,16 @@
 
 		/* main layout */
 		#main {position:fixed; left:0; top:0; width:100%; height:100%;}
-		#main h1, #main p {text-align:center; font-weight:normal; line-height:0.75;}
-		#date {margin:2em 0 0 0; font-size:4em; opacity:0.3;}
-		#time {margin:1em 0 0 0; font-size:10em;}
-		#buttons {margin:2em 0 0 0; font-size:4em; line-height:0.9;}
+		#date {margin:2em 0 0 0; font-size:4em; font-weight:normal; text-align:center; line-height:0.75; opacity:0.3;}
+		#time {margin:1em 0 0 0; font-size:10em; font-weight:normal; text-align:center; line-height:0.75;}
+		#buttons {margin:2em 0 0 0; font-size:4em; font-weight:normal; text-align:center; line-height:0.9;}
+		#setTimer {margin:1em 0 0 0; font-size:1.5em; text-align:center;}
 
-		#setTimerText {margin:1.2em 0 0 0; font-size:1.5em; line-height:1.1;}
-		#setTimerForm {display:none; margin:1em 0 0 0; font-size:1.5em; text-align:center;}
-		#setTimerForm input {margin-right:2px; width:2em; font-size:1.0em;} /* width for firefox */
+		#setTimerText {}
+		#setTimerForm {display:none; margin-top:-0.3em;}
+		#setTimerForm input {margin-right:2px; width:2em; font-size:1em;} /* width for firefox */
 		#setTimerForm input[name="dd"] {width:2.5em;}
-		#setTimerForm input[type="submit"] {width:3em;}
+		#setTimerForm input[type="submit"] {width:3em; font-size:1em;}
 
 		/* colors */
 		body {color:#111; background:#fff;}
@@ -75,7 +75,7 @@
 
 		/* jshint esversion: 5 */
 
-		var date, time, buttons;
+		var date, time, buttons, setTimer;
 		var showHundredths = true; // timer always shows hundredths
 		var colors = {dynamic:false};
 
@@ -192,10 +192,11 @@
 			buttons.style.fontSize = 5 * vw + 'px';
 
 			// calculate margins to space evenly
-			mh = (h - ((fs + 15) * lh * vw)) / 4; // 15 = 3 lines * 5vw
+			mh = (h - ((fs + 15) * lh * vw)) / 5; // 15 = 3 lines * 5vw
 			time.style.marginTop = mh + 'px';
 			date.style.marginTop = mh + 'px';
 			buttons.style.marginTop = mh + 'px';
+			setTimer.style.marginTop = mh + 'px';
 		}
 
 		function showTimerForm() {
@@ -396,6 +397,7 @@
 			date = document.getElementById('date');
 			time = document.getElementById('time');
 			buttons = document.getElementById('buttons');
+			setTimer = document.getElementById('setTimer');
 			getOptions();
 			resize();
 		}
@@ -435,14 +437,16 @@
 			<button type="button" id="start" onclick="Timer.start()">Start</button>
 			<button type="button" id="reset" onclick="Timer.reset()">Reset</button>
 		</p>
-		<p id="setTimerText">Scroll page to set timer... or set <a href="#setTimerForm" onclick="return showTimerForm()">manually</a>.</p>
-		<form id="setTimerForm" onsubmit="Timer.setDuration(this); return hideTimerForm();">
-			<input type="number" name="dd" min="0" max="999" value="0">d : <!--
-			--><input type="number" name="hh" min="0" max="23" value="0">h : <!--
-			--><input type="number" name="mm" min="0" max="59" value="5">m : <!--
-			--><input type="number" name="ss" min="0" max="59" value="0">s
-			<input type="submit" value="Set">
-		</form>
+		<div id="setTimer">
+			<p id="setTimerText">Scroll page to set timer... or set <a href="#setTimerForm" onclick="return showTimerForm()">manually</a>.</p>
+			<form id="setTimerForm" onsubmit="Timer.setDuration(this); return hideTimerForm();">
+				<input type="number" name="dd" min="0" max="999" value="0"> d : <!--
+				--><input type="number" name="hh" min="0" max="23" value="0"> h : <!--
+				--><input type="number" name="mm" min="0" max="59" value="5"> m : <!--
+				--><input type="number" name="ss" min="0" max="59" value="0"> s
+				<input type="submit" value="Set">
+			</form>
+		</div>
 	</div>
 
 	<!-- simple analytics -->

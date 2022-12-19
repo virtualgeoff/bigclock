@@ -36,12 +36,10 @@
 		#nav > a {font-size:1.5em;}
 
 		/* main layout */
-		#main {}
-		#main h1, #main p {text-align:center; font-weight:normal; line-height:0.75;}
-		#date {margin:2em 0 0 0; font-size:4em; opacity:0.3;}
-		#time {margin:1em 0 0 0; font-size:10em;}
-		#buttons {margin:1em 0 0 0; font-size:4em; line-height:0.9;}
-		#lapTimes {margin:1em 0; text-align:center;}
+		#date {margin:2em 0 0 0; font-size:4em; font-weight:normal; text-align:center; line-height:0.75; opacity:0.3;}
+		#time {margin:1em 0 0 0; font-size:10em; font-weight:normal; text-align:center; line-height:0.75;}
+		#buttons {margin:2em 0 0 0; font-size:4em; font-weight:normal; text-align:center; line-height:0.9;}
+		#lapTimes {margin:1em auto; text-align:center;}
 
 		/* colors */
 		body {color:#111; background:#fff;}
@@ -71,10 +69,15 @@
 
 		/* jshint esversion: 5 */
 
-		var date, time, buttons;
+		var date, time, buttons, lapTimes;
 		var showHundredths = true; // stopwatch always shows hundredths
 		var colors = {dynamic:false};
 		var waiting = false;
+
+		// Date.now shim
+		if (!Date.now) {
+			Date.now = function() { return new Date().getTime(); }
+		}
 
 		function toggleNav(e) {
 			var navlist = document.getElementById('navlist');
@@ -189,10 +192,11 @@
 			buttons.style.fontSize = 5 * vw + 'px';
 
 			// calculate margins to space evenly
-			mh = (h - ((fs + 15) * lh * vw)) / 4; // 15 = 3 lines * 5vw
+			mh = (h - ((fs + 15) * lh * vw)) / 5; // 15 = 3 lines * 5vw
 			time.style.marginTop = mh + 'px';
 			date.style.marginTop = mh + 'px';
 			buttons.style.marginTop = mh + 'px';
+			lapTimes.style.marginTop = mh + 'px';
 		}
 
 		function throttledResize() {
@@ -388,6 +392,7 @@
 			date = document.getElementById('date');
 			time = document.getElementById('time');
 			buttons = document.getElementById('buttons');
+			lapTimes = document.getElementById('lapTimes');
 			getOptions();
 			resize();
 		}
@@ -418,18 +423,15 @@
 		</ul>
 	</div>
 
-	<div id="main">
-		<p id="date">Stopwatch</p>
-		<h1 id="time">00:00<small>.00</small></h1>
-		<p id="buttons">
-			<button type="button" id="start" onclick="Stopwatch.start()">Start</button>
-			<button type="button" id="lap"   onclick="Stopwatch.lap()">Lap</button>
-			<button type="button" id="reset" onclick="Stopwatch.reset()">Reset</button>
-		</p>
-	</div>
+	<p id="date">Stopwatch</p>
+	<h1 id="time">00<small>.00</small></h1>
+	<p id="buttons">
+		<button type="button" id="start" onclick="Stopwatch.start()">Start</button>
+		<button type="button" id="lap"   onclick="Stopwatch.lap()">Lap</button>
+		<button type="button" id="reset" onclick="Stopwatch.reset()">Reset</button>
+	</p>
 
 	<div id="lapTimes">
-		<!-- h2>Lap Times</h2 -->
 		<table>
 			<thead>
 				<tr>
