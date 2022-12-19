@@ -186,7 +186,7 @@
 
 			// set font size and reduce if too wide
 			time.style.fontSize = fs * vw + 'px'; // = 19vw
-			while ((time.scrollWidth > time.clientWidth) && (fs > 12)) {
+			while ((time.scrollWidth > time.clientWidth) && (fs > 9)) {
 				fs--;
 				time.style.fontSize = fs * vw + 'px';
 				//console.log('window.innerWidth: ' + w + ', scrollWidth: ' + time.scrollWidth + ', clientWidth: ' + time.clientWidth + ', offsetWidth: ' + time.offsetWidth);

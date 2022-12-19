@@ -187,7 +187,7 @@
 
 			// set font size and reduce if too wide
 			time.style.fontSize = fs * vw + 'px'; // = 19vw
-			while ((time.scrollWidth > time.clientWidth) && (fs > 12)) {
+			while ((time.scrollWidth > time.clientWidth) && (fs > 9)) {
 				fs--;
 				time.style.fontSize = fs * vw + 'px';
 				//console.log('window.innerWidth: ' + w + ', scrollWidth: ' + time.scrollWidth + ', clientWidth: ' + time.clientWidth + ', offsetWidth: ' + time.offsetWidth);
@@ -341,20 +341,6 @@
 				if (minutes > 0) timeStr += pad2(minutes % 60) + ':';
 				timeStr += pad2(seconds % 60) + '<small>.' + pad2(hundredths) + '</small>&nbsp;';
 				return timeStr;
-			}
-
-			function checkFontSize() {
-				// check the width of the time element and reduce the font-size until it fits the window
-				if ((document.getElementById('time').clientWidth / window.innerWidth) < 0.8) {
-					fontSize = 19;
-					document.getElementById('time').style.fontSize = fontSize + 'vw';
-					//console.log('font-size reset to 19vw');
-				}
-				while (document.getElementById('time').clientWidth > window.innerWidth) {
-					fontSize -= 0.5;
-					document.getElementById('time').style.fontSize = fontSize + 'vw';
-					//console.log('font-size reduced to ' + fontSize + 'vw');
-				}
 			}
 
 			function update() {
