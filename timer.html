@@ -81,7 +81,7 @@
 
 		// Date.now shim
 		if (!Date.now) {
-			Date.now = function() { return new Date().getTime(); }
+			Date.now = function() { return new Date().getTime(); };
 		}
 
 		function toggleNav(e) {
@@ -227,7 +227,7 @@
 			function setData(data) {
 				// set timer data (on page load)
 				// this would be easier with JSON, but IE7
-				var arr = data.split(',')
+				var arr = data.split(',');
 				//console.log(arr);
 				isRunning     = (arr[0] == 'true') ? true : false;
 				endTime       = parseInt(arr[1]);
@@ -242,13 +242,6 @@
 				// save timer data to localStorage
 				if (storageAvailable('localStorage')) {
 					localStorage.setItem('timerData', [isRunning, endTime, duration, timeRemaining]);
-				}
-			}
-
-			function deleteData() {
-				// delete timer data from localStorage
-				if (storageAvailable('localStorage')) {
-					localStorage.removeItem('timerData');
 				}
 			}
 

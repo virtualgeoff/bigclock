@@ -72,11 +72,10 @@
 		var date, time, buttons, lapTimes;
 		var showHundredths = true; // stopwatch always shows hundredths
 		var colors = {dynamic:false};
-		var waiting = false;
 
 		// Date.now shim
 		if (!Date.now) {
-			Date.now = function() { return new Date().getTime(); }
+			Date.now = function() { return new Date().getTime(); };
 		}
 
 		function toggleNav(e) {
@@ -203,17 +202,6 @@
 			lapTimes.style.marginTop = mh + 'px';
 		}
 
-		function throttledResize() {
-			if (!waiting) {
-				console.log('resize!');
-				resize();
-				waiting = true;
-				setTimeout(function() { waiting = false; }, 20);
-			} else {
-				console.log('waiting...');
-			}
-		}
-
 		var Stopwatch = (function() {
 			// stopwatch data and methods
 			var isRunning = false,
@@ -228,7 +216,7 @@
 			function setData(data) {
 				// set stopwatch data (on page load)
 				// this would be easier with JSON, but IE7
-				var arr = data.split(',')
+				var arr = data.split(',');
 				//console.log(arr);
 				isRunning = (arr[0] == 'true') ? true : false;
 				startTime = parseInt(arr[1]);
@@ -244,7 +232,7 @@
 
 			function setLapData(data) {
 				// set stopwatch laptimes data (on page load)
-				var arr = data.split(',')
+				var arr = data.split(',');
 				//console.log(arr);
 				for (var i=0; i<arr.length; i++) {
 					lapTimes[i] = parseInt(arr[i]);
