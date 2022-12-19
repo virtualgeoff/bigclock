@@ -116,7 +116,7 @@
 
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
+			showHundredths = (localStorage.getItem('showHundredths') == 'true') ? true : false; // convert from string!
 
 			if (colorScheme) {
 				document.body.className = colorScheme;

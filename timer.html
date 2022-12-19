@@ -79,6 +79,11 @@
 		var showHundredths = true; // timer always shows hundredths
 		var colors = {dynamic:false};
 
+		// Date.now shim
+		if (!Date.now) {
+			Date.now = function() { return new Date().getTime(); }
+		}
+
 		function toggleNav(e) {
 			var navlist = document.getElementById('navlist');
 			navlist.style.display = (navlist.style.display === 'block') ? 'none' : 'block';
@@ -128,7 +133,6 @@
 
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			//showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
 			var timerData  = localStorage.getItem('timerData');
 
 			if (colorScheme) {
@@ -145,7 +149,7 @@
 				document.body.style.fontFamily = fontFamily;
 			}
 			if (timerData) {
-				Timer.setData( JSON.parse(timerData) );
+				Timer.setData(timerData);
 			}
 		}
 
@@ -220,13 +224,15 @@
 
 			var timeStr, years, days, hours, minutes, seconds, hundredths, milliseconds, textLength;
 
-			function setData(obj) {
+			function setData(data) {
 				// set timer data (on page load)
-				console.log(obj);
-				isRunning = obj.isRunning;
-				endTime = obj.endTime;
-				duration = obj.duration;
-				timeRemaining = obj.timeRemaining;
+				// this would be easier with JSON, but IE7
+				var arr = data.split(',')
+				//console.log(arr);
+				isRunning     = (arr[0] == 'true') ? true : false;
+				endTime       = parseInt(arr[1]);
+				duration      = parseInt(arr[2]);
+				timeRemaining = parseInt(arr[3]);
 				if (isRunning) { document.getElementById('start').innerText = 'Stop'; }
 				update();
 				if (colors.dynamic && !isRunning) { setDynamicColors(new Date(timeRemaining)); } // to make up not updating colors in update
@@ -235,17 +241,12 @@
 			function saveData() {
 				// save timer data to localStorage
 				if (storageAvailable('localStorage')) {
-					var obj = {
-						'isRunning': isRunning,
-						'endTime': endTime,
-						'duration': duration,
-						'timeRemaining': timeRemaining
-					};
-					localStorage.setItem('timerData', JSON.stringify(obj));
+					localStorage.setItem('timerData', [isRunning, endTime, duration, timeRemaining]);
 				}
 			}
 
 			function deleteData() {
+				// delete timer data from localStorage
 				if (storageAvailable('localStorage')) {
 					localStorage.removeItem('timerData');
 				}

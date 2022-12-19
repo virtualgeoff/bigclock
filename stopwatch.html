@@ -128,8 +128,8 @@
 
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			//showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
-			var stopwatchData  = localStorage.getItem('stopwatchData');
+			var stopwatchData = localStorage.getItem('stopwatchData');
+			var stopwatchLaps = localStorage.getItem('stopwatchLaps');
 
 			if (colorScheme) {
 				document.body.className = colorScheme;
@@ -145,7 +145,10 @@
 				document.body.style.fontFamily = fontFamily;
 			}
 			if (stopwatchData) {
-				Stopwatch.setData( JSON.parse(stopwatchData) );
+				Stopwatch.setData(stopwatchData);
+				if (stopwatchLaps) {
+					Stopwatch.setLapData(stopwatchLaps);
+				}
 			}
 		}
 
@@ -222,15 +225,15 @@
 
 			var timeStr, years, days, hours, minutes, seconds, hundredths, milliseconds, textLength;
 
-			function setData(obj) {
+			function setData(data) {
 				// set stopwatch data (on page load)
-				console.log(obj);
-				isRunning = obj.isRunning;
-				startTime = obj.startTime;
-				stopTime = obj.stopTime;
-				lapTimes = obj.lapTimes;
+				// this would be easier with JSON, but IE7
+				var arr = data.split(',')
+				//console.log(arr);
+				isRunning = (arr[0] == 'true') ? true : false;
+				startTime = parseInt(arr[1]);
+				stopTime  = parseInt(arr[2]);
 
-				if (lapTimes.length > 1) { writeLapTimes(); }
 				if (isRunning) {
 					document.getElementById('start').innerText = 'Pause';
 					document.getElementById('lap').style.display = 'inline';
@@ -239,22 +242,29 @@
 				update();
 			}
 
+			function setLapData(data) {
+				// set stopwatch laptimes data (on page load)
+				var arr = data.split(',')
+				//console.log(arr);
+				for (var i=0; i<arr.length; i++) {
+					lapTimes[i] = parseInt(arr[i]);
+				}
+				if (lapTimes.length > 1) { writeLapTimes(); }
+			}
+
 			function saveData() {
 				// save stopwatch data to localStorage
 				if (storageAvailable('localStorage')) {
-					var obj = {
-						'isRunning': isRunning,
-						'startTime': startTime,
-						'stopTime': stopTime,
-						'lapTimes': lapTimes
-					};
-					localStorage.setItem('stopwatchData', JSON.stringify(obj));
+					localStorage.setItem('stopwatchData', [isRunning, startTime, stopTime]);
+					localStorage.setItem('stopwatchLaps', lapTimes);
 				}
 			}
 
 			function deleteData() {
+				// delete stopwatch data from localStorage
 				if (storageAvailable('localStorage')) {
 					localStorage.removeItem('stopwatchData');
+					localStorage.removeItem('stopwatchLaps');
 				}
 			}
 
@@ -268,7 +278,7 @@
 					document.getElementById('reset').style.display = 'inline';
 
 					// cancel next scheduled update
-					if (showHundredths) {
+					if (showHundredths && window.requestAnimationFram) {
 						cancelAnimationFrame(timerID);
 					} else {
 						clearTimeout(timerID);
@@ -383,6 +393,7 @@
 
 			return {
 				setData: setData,
+				setLapData: setLapData,
 				start: start,
 				lap: lap,
 				reset: reset

@@ -122,8 +122,8 @@
 
 			var colorScheme = localStorage.getItem('colorScheme');
 			var fontFamily  = localStorage.getItem('fontFamily');
-			var showHundredths = JSON.parse(localStorage.getItem('showHundredths')); // convert from string!
-			var radio = null, option = null, checkbox = null;
+			var showHundredths = (localStorage.getItem('showHundredths') == 'true') ? true : false; // convert from string!
+			var radio = null, options, checkbox = null;
 
 			if (colorScheme) {
 				document.body.className = '';
@@ -147,8 +147,11 @@
 
 			if (fontFamily) {
 				document.body.style.fontFamily = fontFamily;
-				option = document.querySelector('option[value="'+fontFamily+'"]');
-				if (option) { option.selected = 'selected'; } // set select option
+				options = document.getElementsByTagName('option');
+				for (var i=0; i<options.length; i++) {
+					if (options[i].value == fontFamily) { options[i].selected = 'selected'; }
+				}
+
 			}
 			if (showHundredths) {
 				checkbox = document.getElementById('showHundredths');
@@ -193,13 +196,13 @@
 
 		function clearColors() {
 			// clear text, link, and background colors if previously set, so CSS colors are used
-			document.body.style.backgroundColor = null;
-			document.body.style.color = null;
-			document.getElementById('navlist').style.backgroundColor = null;
-			document.getElementById('navlist').style.borderColor = null;
+			document.body.style.backgroundColor = '';
+			document.body.style.color = '';
+			document.getElementById('navlist').style.backgroundColor = '';
+			document.getElementById('navlist').style.borderColor = '';
 
 			for (var i=0; i<document.links.length; i++) {
-				document.links[i].style.color = null;
+				document.links[i].style.color = '';
 			}
 		}
 
