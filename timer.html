@@ -18,7 +18,7 @@
 		h1 {}
 		p {}
 		small {font-size:0.667em;}
-		button {width:5em; padding:0.5em; font-size:0.5em; cursor:pointer;}
+		button {width:5em; padding:0.5em; font-size:1em; cursor:pointer;}
 
 		table {border:1px solid rgba(128,128,128,0.2); border-collapse:collapse;}
 		th {padding:0.1em 1em; text-align:center; border:1px solid rgba(128,128,128,0.2);}
@@ -40,7 +40,7 @@
 		#date, #time, #buttons {margin:0; padding:0; font-size:4em; font-weight:normal; text-align:center;}
 		#date {padding-top:2em; line-height:0.75; opacity:0.3;}
 		#time {margin-top:1em; font-size:10em; line-height:0.75;}
-		#buttons {margin-top:2em; line-height:0.9;}
+		#buttons {margin-top:2em; font-size:1.5em; line-height:0.9;}
 		#setTimer {margin:1em 0 0 0; font-size:1.5em; text-align:center;}
 
 		#setTimerText {}
@@ -70,6 +70,11 @@
 			a {color:#ddd;}
 			a:visited {color:#ddd;}
 			#nav ul {background:#000; border-color:#ddd;}
+		}
+
+		@media all and (max-width:500px) {
+			/* increase button size on small screens */
+			button {font-size:2em;}
 		}
 
 	</style>
@@ -192,11 +197,11 @@
 			while ((time.scrollWidth > time.clientWidth) && (fs > 9)) {
 				fs--;
 				time.style.fontSize = fs * vw + 'px';
-				//console.log('window.innerWidth: ' + w + ', scrollWidth: ' + time.scrollWidth + ', clientWidth: ' + time.clientWidth + ', offsetWidth: ' + time.offsetWidth);
 				console.log('font size: ' + fs + 'vw, ' + (fs * vw) + 'px');
 			}
 			date.style.fontSize = 5 * vw + 'px';
-			buttons.style.fontSize = 5 * vw + 'px';
+			buttons.style.fontSize = 2.5 * vw + 'px';
+			setTimer.style.fontSize = 2.5 * vw + 'px';
 
 			// calculate margins to space evenly
 			mh = (h - ((fs + 15) * lh * vw)) / 5; // 15 = 3 lines * 5vw
