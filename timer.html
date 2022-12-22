@@ -237,9 +237,9 @@
 				var arr = data.split(',');
 				//console.log(arr);
 				isRunning     = (arr[0] == 'true') ? true : false;
-				endTime       = parseInt(arr[1]);
-				duration      = parseInt(arr[2]);
-				timeRemaining = parseInt(arr[3]);
+				endTime       = parseInt(arr[1]) || null;
+				duration      = parseInt(arr[2]) || null;
+				timeRemaining = parseInt(arr[3]) || null;
 				if (isRunning) { document.getElementById('start').innerText = 'Stop'; }
 				update();
 				if (colors.dynamic && !isRunning) { setDynamicColors(new Date(timeRemaining)); } // to make up not updating colors in update

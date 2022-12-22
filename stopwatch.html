@@ -225,8 +225,8 @@
 				var arr = data.split(',');
 				//console.log(arr);
 				isRunning = (arr[0] == 'true') ? true : false;
-				startTime = parseInt(arr[1]);
-				stopTime  = parseInt(arr[2]);
+				startTime = parseInt(arr[1]) || null;
+				stopTime  = parseInt(arr[2]) || null;
 
 				if (isRunning) {
 					document.getElementById('start').innerText = 'Pause';
