@@ -95,7 +95,7 @@
 		}
 
 		function storageAvailable(type) {
-			// see https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+			// check for Storage API
 			try {
 				var storage = window[type],
 					x = '__storage_test__';
@@ -171,7 +171,6 @@
 			while ((time.scrollWidth > time.clientWidth) && (fs > 12)) {
 				fs--;
 				time.style.fontSize = fs * vw + 'px';
-				//console.log('window.innerWidth: ' + w + ', scrollWidth: ' + time.scrollWidth + ', clientWidth: ' + time.clientWidth + ', offsetWidth: ' + time.offsetWidth);
 				console.log('font size: ' + fs + 'vw, ' + (fs * vw) + 'px');
 			}
 			date.style.fontSize = 5 * vw + 'px';

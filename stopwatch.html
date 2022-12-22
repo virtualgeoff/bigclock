@@ -112,7 +112,7 @@
 		}
 
 		function storageAvailable(type) {
-			// see https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+			// check for Storage API
 			try {
 				var storage = window[type],
 					x = '__storage_test__';
@@ -347,7 +347,6 @@
 				days    = Math.floor(hours/24);
 				years   = Math.floor(days/365);
 
-				//timeStr = pad3(years) + ':' + pad3(days % 365) + ':' + pad2(hours % 24) + ':' + pad2(minutes % 60) + ':' + pad2(seconds % 60);
 				timeStr = '&nbsp;';
 				if (years > 0) timeStr += pad3(years) + ':';
 				if (days  > 0) timeStr += pad3(days % 365) + ':';
