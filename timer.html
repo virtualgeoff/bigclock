@@ -28,7 +28,8 @@
 		a:hover {text-decoration:underline; opacity:100%}
 
 		/* nav */
-		#nav {position:fixed; left:0; top:0; margin:0.6em; z-index:99;}
+		#nav {position:fixed; left:0.5em; top:0; margin:0.6em; z-index:99;}
+		#nav.shifted {top:5.0em;}
 		#nav ul {display:none; width:auto; margin:0; padding:0.5em 1em 0.5em 0.3em; list-style:none; border:1px solid #000;}
 		#nav:hover ul {display:block;}
 		#nav li {margin:0; padding:0; white-space:nowrap;}
@@ -85,10 +86,18 @@
 		var date, time, buttons, setTimer;
 		var showHundredths = true; // timer always shows hundredths
 		var colors = {dynamic:false};
+		var iPad = false;
 
 		// Date.now shim
 		if (!Date.now) {
 			Date.now = function() { return new Date().getTime(); };
+		}
+
+		function checkIPad() {
+			// check device
+			if (navigator.userAgent.match(/iPad/i) || ((navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) && !window.MSStream)) {
+				iPad = true;
+			}
 		}
 
 		function toggleNav(e) {
@@ -97,7 +106,27 @@
 			return false;
 		}
 
-		function fullscreen(e) {
+		function checkFullscreenAvailable() {
+			// check if fullscreen is available, and if so, add a link
+			// note: iPhone does not support fullscreen
+			var dE = document.documentElement;
+			if (dE.requestFullscreen || dE.webkitRequestFullScreen) {
+				document.getElementById('navlist').innerHTML += '<li><a href="#" title="Make full screen" onclick="return toggleFullscreen();">Fullscreen</a></li>';
+			}
+		}
+
+		function checkFullscreen() {
+			// check if currently in fullscreen mode
+			if ((window.innerWidth === screen.width) && (window.innerHeight === screen.height) ||
+			  (window.innerWidth === screen.height) && (window.innerHeight === screen.width)) {
+				// add class to #nav to move it away from big x
+				if (iPad) { document.getElementById('nav').className = 'shifted'; }
+			} else {
+				if (iPad) { document.getElementById('nav').className = ''; }
+			}
+		}
+
+		function toggleFullscreen(e) {
 			// toggle fullscreen mode
 			var d = document, dE = d.documentElement;
 
@@ -209,6 +238,9 @@
 			time.style.marginTop = mh + 'px';
 			buttons.style.marginTop = mh + 'px';
 			setTimer.style.marginTop = mh + 'px';
+
+			// finally, check if fullscreen
+			checkFullscreen();
 		}
 
 		function showTimerForm() {
@@ -385,6 +417,8 @@
 			time = document.getElementById('time');
 			buttons = document.getElementById('buttons');
 			setTimer = document.getElementById('setTimer');
+			checkIPad();
+			checkFullscreenAvailable();
 			getOptions();
 			resize();
 		}
@@ -413,7 +447,6 @@
 			<li><a href="./timer.html">Timer</a></li>
 			<li><a href="./about.html">About</a></li>
 			<li><a href="./settings.html">Settings</a></li>
-			<li><a href="#" title="Make full screen" onclick="return fullscreen();">Fullscreen</a></li>
 		</ul>
 	</div>
 

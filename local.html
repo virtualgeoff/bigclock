@@ -23,7 +23,8 @@
 		a:hover {text-decoration:underline; opacity:100%}
 
 		/* nav */
-		#nav {position:fixed; left:0; top:0; margin:0.6em; z-index:99;}
+		#nav {position:fixed; left:0.5em; top:0; margin:0.6em; z-index:99;}
+		#nav.shifted {top:5.0em;}
 		#nav ul {display:none; width:auto; margin:0; padding:0.5em 1em 0.5em 0.3em; list-style:none; border:1px solid #000;}
 		#nav:hover ul {display:block;}
 		#nav li {margin:0; padding:0; white-space:nowrap;}
@@ -68,6 +69,14 @@
 		var showHundredths = false;
 		var colors = {dynamic:false};
 		var isChrome = false;
+		var iPad = false;
+
+		function checkIPad() {
+			// check device
+			if (navigator.userAgent.match(/iPad/i) || ((navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) && !window.MSStream)) {
+				iPad = true;
+			}
+		}
 
 		function toggleNav(e) {
 			var navlist = document.getElementById('navlist');
@@ -75,7 +84,33 @@
 			return false;
 		}
 
-		function fullscreen(e) {
+		function checkFullscreenAvailable() {
+			// check if fullscreen is available, and if so, add a link
+			// note: iPhone does not support fullscreen
+			var dE = document.documentElement;
+			if (dE.requestFullscreen || dE.webkitRequestFullScreen) {
+				document.getElementById('navlist').innerHTML += '<li><a href="#" title="Make full screen" onclick="return toggleFullscreen();">Fullscreen</a></li>';
+			}
+		}
+
+		function checkFullscreen() {
+			// check if currently in fullscreen mode
+			// should be able to do this with CSS : html:fullscreen / html:-webkit-full-screen
+			// or by checking existence of document.fullscreenElement or document.webkitFullscreenElement
+			// but on Safari it doesn't remember if you navigate between pages while in fullscreen
+			// (other browsers don't let you navigate between pages in fullscreen anyway)
+			// BUT... we can check screen and window dimensions!
+
+			if ((window.innerWidth === screen.width) && (window.innerHeight === screen.height) ||
+			  (window.innerWidth === screen.height) && (window.innerHeight === screen.width)) {
+				// add class to #nav to move it away from big x
+				if (iPad) { document.getElementById('nav').className = 'shifted'; }
+			} else {
+				if (iPad) { document.getElementById('nav').className = ''; }
+			}
+		}
+
+		function toggleFullscreen(e) {
 			// toggle fullscreen mode
 			var d = document, dE = d.documentElement;
 
@@ -182,6 +217,9 @@
 			date.style.paddingTop = mh + 'px';
 			time.style.marginTop = mh + 'px';
 			zone.style.marginTop = mh + 'px';
+
+			// finally, check if fullscreen
+			checkFullscreen();
 		}
 
 		function update() {
@@ -224,6 +262,8 @@
 			}
 			if (navigator.language) { console.log('isChrome: ' + isChrome + '\nnavigator.language: ' + navigator.language); }
 
+			checkIPad();
+			checkFullscreenAvailable();
 			getOptions();
 			update();
 			resize();
@@ -251,7 +291,6 @@
 			<li><a href="./timer.html">Timer</a></li>
 			<li><a href="./about.html">About</a></li>
 			<li><a href="./settings.html">Settings</a></li>
-			<li><a href="#" title="Make full screen" onclick="return fullscreen();">Fullscreen</a></li>
 		</ul>
 	</div>
 
