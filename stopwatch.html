@@ -189,7 +189,7 @@
 
 		function setDynamicColors(now) {
 			// set colors based on the current local time
-			colors.h = now.getHours() * 15 + now.getMinutes() * 15/60; // 0-360°
+			colors.h = (now.getHours() + now.getMinutes()/60) * 15; // 0-360°
 			colors.s = now.getMinutes() + 40; // 40-100%
 			colors.l = (now.getSeconds() + now.getMilliseconds()/1000) + 20; // 20-80%;
 			colors.bg = 'hsl(' + colors.h + ', ' + colors.s + '%, '+ colors.l + '%)';
